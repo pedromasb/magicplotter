@@ -170,6 +170,69 @@ if upl_file is not None:
 
         st.plotly_chart(fig_scatter,theme=None)
 
+else:
+    st.markdown('## This is an example:')
+
+    data = pd.read_csv('data/example_data.csv')
+    # Dictionary (key:value) with the colour associated with each feature for the plot
+    colour_map = {'y0': 'rgba(234, 85, 69,0.9)', 'y1': 'rgba(37, 189, 176, 0.9)', 'y2': 'rgba(31, 52, 64,0.9)', 'y3':'rgba(237, 191, 51,0.9)'}
+
+    # Dictionary (key:value) with the label associated with each feature for the legend
+    labels_map = {'y0': 'Data 0', 'y1': 'Data 1', 'y2': 'Data 2', 'y3':'Data 3'}
+
+    fig_scatter = px.scatter(data_frame=data,x='x',y=['y0','y1','y2','y3'],
+                            size=abs(np.round(data.iloc[:,-1],2)*8),
+                            hover_name='obj',  # Name of the pop-up menu when we hover over a point
+                            width=800,
+                            height=600,
+                            color_discrete_map=colour_map)
+
+    # For each feature, we change the name to that included in the dictionary labels_map
+    fig_scatter.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
+
+    # ----------------- From here it is only for formatting. No need to change anything -----------------
+
+    # Choose the figure font
+    font_dict=dict(family='Arial',
+                  size=16,
+                  color='black')
+
+    # General figure formatting
+    fig_scatter.update_layout(font=font_dict,  # font formatting
+                              plot_bgcolor='white',  # background color
+                              width=900,  # figure width
+                              height=600,  # figure height
+                              title={'text':'Interactive Scatter Plot','x':0.5,'font':{'size':24}},  # Title formatting
+                              legend_title='Data Collections')
+
+    # x and y-axis formatting
+    fig_scatter.update_yaxes(title_text='Feature',  # axis title
+                            showline=True,  # add line at x=0
+                            showticklabels=True,
+                            showgrid=False,  # plot grid
+                            gridcolor='lightgrey',
+                            linecolor='black',  # line color
+                            linewidth=1, # line size
+                            ticks='outside',  # ticks outside/inside axis
+                            tickfont=font_dict, # tick label font
+                            mirror=True,  # add ticks to top/right axes
+                            tickwidth=1,  # tick width
+                            tickcolor='black')  # tick color
+
+    fig_scatter.update_xaxes(title_text='x',
+                            showline=True,
+                            showticklabels=True,
+                            showgrid=False,
+                            gridcolor='lightgrey',
+                            linecolor='black',
+                            linewidth=1,
+                            ticks='outside',
+                            tickfont=font_dict,
+                            mirror=True,
+                            tickwidth=1,
+                            tickcolor='black')
+    
+    st.plotly_chart(fig_scatter,theme=None)
 
 # except:
-# print("An exception occurred")  
+# print("An exception occurred")
