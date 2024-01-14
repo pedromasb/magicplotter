@@ -53,70 +53,75 @@ if upl_file is not None:
         col_size = st.multiselect(
         "Choose the column for points size",list(data.columns), data.columns[-1],max_selections=1)
 
-        size_val = data[col_size].values.reshape(250,)
+        if not col_size:
+            st.error("Please select a column.")
 
-        colours = ['#ea5545','#25BDB0','#1F3440','#edbf33']
+        else:
 
-        colour_map = dict([(col, c) for col, c in zip(data[cols].columns,colours)])
+            size_val = data[col_size].values.reshape(250,)
 
-        fig_scatter = px.scatter(data_frame=data, x=cols[0], y=cols[1:],
-                                size=abs(np.round(size_val,2)*8),
-                                width=800,
-                                height=600,
-                                color_discrete_map=colour_map)
+            colours = ['#ea5545','#25BDB0','#1F3440','#edbf33']
 
-        # For each feature, we change the name to that included in the dictionary labels_map
-        # fig_scatter.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
+            colour_map = dict([(col, c) for col, c in zip(data[cols].columns,colours)])
+
+            fig_scatter = px.scatter(data_frame=data, x=cols[0], y=cols[1:],
+                                    size=abs(np.round(size_val,2)*8),
+                                    width=800,
+                                    height=600,
+                                    color_discrete_map=colour_map)
+
+            # For each feature, we change the name to that included in the dictionary labels_map
+            # fig_scatter.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
 
 
-        # ----------------- From here it is only for formatting. No need to change anything -----------------
+            # ----------------- From here it is only for formatting. No need to change anything -----------------
 
 
-        # Choose the figure font
-        font_dict=dict(family='Arial',
-                      size=16,
-                      color='black')
+            # Choose the figure font
+            font_dict=dict(family='Arial',
+                          size=16,
+                          color='black')
 
-        # General figure formatting
-        fig_scatter.update_layout(font=font_dict,  # font formatting
-                                  plot_bgcolor='white',  # background color
-                                  width=900,  # figure width
-                                  height=600,  # figure height
-                                  title={'text':'Interactive Scatter Plot','x':0.5,'font':{'size':24}},  # Title formatting
-                                  legend_title='Data Collections')
+            # General figure formatting
+            fig_scatter.update_layout(font=font_dict,  # font formatting
+                                      plot_bgcolor='white',  # background color
+                                      width=900,  # figure width
+                                      height=600,  # figure height
+                                      title={'text':'Interactive Scatter Plot','x':0.5,'font':{'size':24}},  # Title formatting
+                                      legend_title='Data Collections')
 
-        # x and y-axis formatting
-        fig_scatter.update_yaxes(title_text='Feature',  # axis title
-                                showline=True,  # add line at x=0
-                                showticklabels=True,
-                                showgrid=False,  # plot grid
-                                gridcolor='lightgrey',
-                                linecolor='black',  # line color
-                                linewidth=1, # line size
-                                ticks='outside',  # ticks outside/inside axis
-                                tickfont=font_dict, # tick label font
-                                mirror=True,  # add ticks to top/right axes
-                                tickwidth=1,  # tick width
-                                tickcolor='black')  # tick color
+            # x and y-axis formatting
+            fig_scatter.update_yaxes(title_text='Feature',  # axis title
+                                    showline=True,  # add line at x=0
+                                    showticklabels=True,
+                                    showgrid=False,  # plot grid
+                                    gridcolor='lightgrey',
+                                    linecolor='black',  # line color
+                                    linewidth=1, # line size
+                                    ticks='outside',  # ticks outside/inside axis
+                                    tickfont=font_dict, # tick label font
+                                    mirror=True,  # add ticks to top/right axes
+                                    tickwidth=1,  # tick width
+                                    tickcolor='black')  # tick color
 
-        fig_scatter.update_xaxes(title_text='x',
-                                showline=True,
-                                showticklabels=True,
-                                showgrid=False,
-                                gridcolor='lightgrey',
-                                linecolor='black',
-                                linewidth=1,
-                                ticks='outside',
-                                tickfont=font_dict,
-                                mirror=True,
-                                tickwidth=1,
-                                tickcolor='black')
+            fig_scatter.update_xaxes(title_text='x',
+                                    showline=True,
+                                    showticklabels=True,
+                                    showgrid=False,
+                                    gridcolor='lightgrey',
+                                    linecolor='black',
+                                    linewidth=1,
+                                    ticks='outside',
+                                    tickfont=font_dict,
+                                    mirror=True,
+                                    tickwidth=1,
+                                    tickcolor='black')
 
-        st.plotly_chart(fig_scatter,theme=None)
+            st.plotly_chart(fig_scatter,theme=None)
 
-        fig_html = fig_scatter.to_html()
+            fig_html = fig_scatter.to_html()
 
-        st.download_button(label='Download Figure in html',data=fig_html,file_name='plotly_figure.html')
+            st.download_button(label='Download Figure in html',data=fig_html,file_name='plotly_figure.html')
 
 else:
     st.markdown('## This is an example:')
