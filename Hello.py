@@ -114,6 +114,10 @@ if upl_file is not None:
 
         st.plotly_chart(fig_scatter,theme=None)
 
+        fig_html = fig_scatter.to_html()
+
+        st.download_button(label='Download Figure in html',data=fig_html,file_name='plotly_figure.html')
+
 else:
     st.markdown('## This is an example:')
 
