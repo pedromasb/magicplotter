@@ -4,3 +4,4 @@ pandas
 pydeck
 streamlit
 plotly
+st-pages

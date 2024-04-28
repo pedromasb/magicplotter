@@ -3,23 +3,24 @@ from streamlit.logger import get_logger
 import pandas as pd
 import plotly.express as px
 import numpy as np
-
-LOGGER = get_logger(__name__)
+from st_pages import Page, show_pages, add_page_title
 
 st.set_page_config(
     page_title="MagicPlotter",
     page_icon="🚀",
 )
 
-st.write("# Let´s GO! 👋")
-
-st.sidebar.success("Select a demo above.")
-
-st.markdown(
-    """
-**Probando Probando**
-"""
+show_pages(
+    [
+        Page("Hello.py", "Basic plots"),
+        Page("pages/statistical_plots.py", "Statistical plots"),
+    ]
 )
+
+st.title('MagicPlotter')
+st.subheader('by Pedro Mas Buitrago &nbsp; [![pedro](https://img.shields.io/badge/%20Click_me!-red?style=social&logo=github&label=pedromasb&labelColor=grey)](https://pedromasb.github.io/)')
+
+st.markdown('---')
 
 @st.cache_data()
 def read_csv(file):
@@ -70,7 +71,20 @@ if upl_file is not None:
         with cols_layout[3]:
             c4 = st.text_input('Colour #4',value='rgba(237,191,51,0.7)')
 
+        cols_layout = st.columns(4)
+        with cols_layout[0]:
+            l1 = st.text_input('Label #1',value='Data 1')
+        with cols_layout[1]:
+            l2 = st.text_input('Label #2',value='Data 2')
+        with cols_layout[2]:
+            l3 = st.text_input('Label #3',value='Data 3')
+        with cols_layout[3]:
+            l4 = st.text_input('Label #4',value='Data 4')
+
         font_size = st.slider('Default font size',value=16,min_value=5,max_value=24)
+
+        legend_labels = ['x',l1,l2,l3,l4]
+        labels_map = dict([(col, l) for col, l in zip(data[cols].columns,legend_labels)])
 
         colours = ['black',c1,c2,c3,c4]
         colour_map = dict([(col, c) for col, c in zip(data[cols].columns,colours)])
@@ -80,6 +94,9 @@ if upl_file is not None:
                                 color_discrete_map=colour_map)
         
         fig_scatter.update_traces(marker={'size': 15})
+
+        # For each feature, we change the name to that included in the dictionary labels_map
+        fig_scatter.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
 
         # ----------------- From here it is only for formatting. No need to change anything -----------------
 
@@ -150,7 +167,8 @@ if upl_file is not None:
         st.download_button(label='Download Figure in html',data=fig_html,file_name='plotly_figure.html')
 
 else:
-    st.markdown('## This is an example:')
+    st.text("")
+    st.markdown('**Below you can find a demo. Choose your file to create your own plot!**')
 
     data = pd.read_csv('data/example_data.csv')
     # Dictionary (key:value) with the colour associated with each feature for the plot
