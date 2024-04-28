@@ -8,7 +8,7 @@ LOGGER = get_logger(__name__)
 
 st.set_page_config(
     page_title="MagicPlotter",
-    page_icon="👋",
+    page_icon="🚀",
 )
 
 st.write("# Let´s GO! 👋")
