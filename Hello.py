@@ -212,6 +212,3 @@ else:
                             tickcolor='black')
     
     st.plotly_chart(fig_scatter,theme=None)
-
-# except:
-# print("An exception occurred")
