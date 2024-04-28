@@ -1,7 +1,5 @@
-# Welcome to streamlit
+# MagicPlotter
 
-This is the app you get when you run `streamlit hello`, extracted as its own app.
 
-Edit [Hello.py](./Hello.py) to customize this app to your heart's desire. ❤️
-
-Check it out on [Streamlit Community Cloud](https://st-hello-app.streamlit.app/)
+Check it out on &nbsp; [![st badge](https://img.shields.io/badge/MagicPlotter-red?style=flat-square
+)](https://magicplotter.streamlit.app/)
