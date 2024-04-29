@@ -177,17 +177,35 @@ if upl_file is not None:
             if x_grid:
                 fig_scatter.update_xaxes(showgrid=True)
         with cols_layout[1]:
-            x_grid = st.checkbox('Y grid')
-            if x_grid:
+            y_grid = st.checkbox('Y grid')
+            if y_grid:
                 fig_scatter.update_yaxes(showgrid=True)
         with cols_layout[2]:
-            x_grid = st.checkbox('X minor grid')
-            if x_grid:
+            x_mingrid = st.checkbox('X minor grid')
+            if x_mingrid:
                 fig_scatter.update_xaxes(minor=dict(ticklen=5, tickcolor="black",showgrid=True))
         with cols_layout[3]:
-            x_grid = st.checkbox('Y minor grid')
-            if x_grid:
+            y_mingrid = st.checkbox('Y minor grid')
+            if y_mingrid:
                 fig_scatter.update_yaxes(minor=dict(ticklen=5, tickcolor="black",showgrid=True))
+
+        cols_layout = st.columns(4)
+        with cols_layout[0]:
+            xside = st.checkbox('Top X axis')
+            if xside:
+                fig_scatter.update_layout(xaxis={'side': 'top'})
+        with cols_layout[1]:
+            yside = st.checkbox('Right Y axis')
+            if yside:
+                fig_scatter.update_layout(yaxis={'side': 'right'})
+        with cols_layout[2]:
+            xrot = st.checkbox('Rotate X labels')
+            if xrot:
+                fig_scatter.update_xaxes(tickangle= -90)
+        with cols_layout[3]:
+            yrot = st.checkbox('Rotate Y labels')
+            if yrot:
+                fig_scatter.update_yaxes(tickangle= -90)
 
         st.plotly_chart(fig_scatter,theme=None)
 
