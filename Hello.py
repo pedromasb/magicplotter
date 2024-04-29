@@ -59,7 +59,7 @@ if upl_file is not None:
         with cols_layout[1]:
             h = st.number_input('Figure height',value=600,min_value=100,max_value=1200)
         with cols_layout[2]:
-            font_fam = st.selectbox("Choose columns", font_list)
+            font_fam = st.selectbox("Choose font family", font_list)
 
         cols_layout = st.columns(4)
         with cols_layout[0]:
@@ -82,7 +82,14 @@ if upl_file is not None:
             l4 = st.text_input('Label #4',value='Data 4')
 
         font_size = st.slider('Default font size',value=16,min_value=5,max_value=24)
+        mk_size = st.slider('Marker size',value=15,min_value=2,max_value=24)
 
+        cols_layout = st.columns(2)
+        with cols_layout[0]:
+            edge_w = st.slider('Marker edge width',value=0.7,min_value=0.0,max_value=2.0)
+        with cols_layout[1]:
+            edge_color = st.selectbox('Marker edge colour', ['white','black','grey','lightgrey'])
+        
         legend_labels = ['x',l1,l2,l3,l4]
         labels_map = dict([(col, l) for col, l in zip(data[cols].columns,legend_labels)])
 
@@ -90,10 +97,9 @@ if upl_file is not None:
         colour_map = dict([(col, c) for col, c in zip(data[cols].columns,colours)])
 
         fig_scatter = px.scatter(data_frame=data, x=cols[0], y=cols[1:],
-                                size=np.ones(len(data))*15,
                                 color_discrete_map=colour_map)
         
-        fig_scatter.update_traces(marker={'size': 15})
+        fig_scatter.update_traces(marker={'size': mk_size,'line':{'width':edge_w,'color':edge_color}})
 
         # For each feature, we change the name to that included in the dictionary labels_map
         fig_scatter.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
