@@ -189,12 +189,21 @@ if upl_file is not None:
             if x_grid:
                 fig_scatter.update_yaxes(minor=dict(ticklen=5, tickcolor="black",showgrid=True))
 
-
         st.plotly_chart(fig_scatter,theme=None)
 
         fig_html = fig_scatter.to_html()
+        fig_pdf = fig_scatter.to_image(format='pdf')
+        fig_png = fig_scatter.to_image(format='png',scale=5)
 
-        st.download_button(label='Download Figure in html',data=fig_html,file_name='plotly_figure.html')
+        cols_layout = st.columns(3)
+        with cols_layout[0]:
+            st.download_button(label='Download Figure as html',data=fig_html,file_name='plotly_figure.html')  
+        with cols_layout[1]:
+            st.download_button(label='Download Figure as pdf',data=fig_pdf,file_name='plotly_figure.pdf')  
+        with cols_layout[2]:
+            st.download_button(label='Download Figure as png',data=fig_png,file_name='plotly_figure.png') 
+
+# -------------------------- If not file is uploaded
 
 else:
     st.text("")
