@@ -5,24 +5,13 @@ import plotly.express as px
 import numpy as np
 from st_pages import Page, show_pages, add_page_title
 
-st.set_page_config(
-    page_title="MagicPlotter",
-    page_icon="🚀",
-)
-
-show_pages(
-    [
-        Page("Hello.py", "Scatter plot"),
-        Page("pages/line_plot.py", "Line plot"),
-    ]
-)
 
 st.title('MagicPlotter')
 st.subheader('by Pedro Mas Buitrago &nbsp; [![pedro](https://img.shields.io/badge/%20Click_me!-red?style=social&logo=github&label=pedromasb&labelColor=grey)](https://pedromasb.github.io/)')
 
 st.markdown('---')
 
-st.markdown('## Scatter Plot')
+st.markdown('## Line Plot')
 
 @st.cache_data()
 def read_csv(file):
@@ -84,13 +73,8 @@ if upl_file is not None:
             l4 = st.text_input('Label #4',value='Data 4')
 
         font_size = st.slider('Default font size',value=16,min_value=5,max_value=24)
-        mk_size = st.slider('Marker size',value=15,min_value=2,max_value=24)
-
-        cols_layout = st.columns(2)
-        with cols_layout[0]:
-            edge_w = st.slider('Marker edge width',value=0.7,min_value=0.0,max_value=2.0)
-        with cols_layout[1]:
-            edge_color = st.selectbox('Marker edge colour', ['white','black','grey','lightgrey'])
+        lw = st.slider('Line width',value=2,min_value=1,max_value=5)
+        mk_size = st.slider('Marker size',value=8,min_value=1,max_value=20)
         
         legend_labels = ['x',l1,l2,l3,l4]
         labels_map = dict([(col, l) for col, l in zip(data[cols].columns,legend_labels)])
@@ -98,10 +82,10 @@ if upl_file is not None:
         colours = ['black',c1,c2,c3,c4]
         colour_map = dict([(col, c) for col, c in zip(data[cols].columns,colours)])
 
-        fig = px.scatter(data_frame=data, x=cols[0], y=cols[1:],
+        fig = px.line(data_frame=data.sort_values(by=cols[0]), x=cols[0], y=cols[1:],
                                 color_discrete_map=colour_map)
         
-        fig.update_traces(marker={'size': mk_size,'line':{'width':edge_w,'color':edge_color}})
+        fig.update_traces(line={'width': lw},marker={'size':mk_size})
 
         # For each feature, we change the name to that included in the dictionary labels_map
         fig.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
@@ -209,6 +193,10 @@ if upl_file is not None:
             if yrot:
                 fig.update_yaxes(tickangle= -90)
 
+        pts = st.checkbox('Add data points')
+        if pts:
+            fig.update_traces(mode='markers+lines')
+
         st.plotly_chart(fig,theme=None)
 
         fig_html = fig.to_html()
@@ -222,74 +210,3 @@ if upl_file is not None:
             st.download_button(label='Download Figure as pdf',data=fig_pdf,file_name='plotly_figure.pdf')  
         with cols_layout[2]:
             st.download_button(label='Download Figure as png',data=fig_png,file_name='plotly_figure.png') 
-
-# -------------------------- If not file is uploaded
-
-else:
-    st.text("")
-    st.markdown('**Below you can find a demo. Choose your file to create your own plot!**')
-
-    data = pd.read_csv('data/example_data.csv')
-    # Dictionary (key:value) with the colour associated with each feature for the plot
-    colour_map = {'y0': 'rgba(234, 85, 69,0.9)', 'y1': 'rgba(37, 189, 176, 0.9)', 'y2': 'rgba(31, 52, 64,0.9)', 'y3':'rgba(237, 191, 51,0.9)'}
-
-    # Dictionary (key:value) with the label associated with each feature for the legend
-    labels_map = {'y0': 'Data 0', 'y1': 'Data 1', 'y2': 'Data 2', 'y3':'Data 3'}
-
-    fig = px.scatter(data_frame=data,x='x',y=['y0','y1','y2','y3'],
-                            size=abs(np.round(data.iloc[:,-1],2)*8),
-                            hover_name='obj',  # Name of the pop-up menu when we hover over a point
-                            width=800,
-                            height=600,
-                            color_discrete_map=colour_map)
-
-    # For each feature, we change the name to that included in the dictionary labels_map
-    fig.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
-
-    # ----------------- From here it is only for formatting. No need to change anything -----------------
-
-    # Choose the figure font
-    font_dict=dict(family='Arial',
-                  size=16,
-                  color='black')
-
-    # General figure formatting
-    fig.update_layout(font=font_dict,  # font formatting
-                              plot_bgcolor='white',  # background color
-                              width=900,  # figure width
-                              height=600,  # figure height
-                              title={'text':'Interactive Scatter Plot','x':0.5,'font':{'size':24}},  # Title formatting
-                              legend_title='Data Collections')
-
-    # x and y-axis formatting
-    fig.update_yaxes(title_text='Feature',  # axis title
-                            showline=True,  # add line at x=0
-                            showticklabels=True,
-                            showgrid=False,  # plot grid
-                            gridcolor='lightgrey',
-                            linecolor='black',  # line color
-                            linewidth=1, # line size
-                            ticks='outside',  # ticks outside/inside axis
-                            tickfont=font_dict, # tick label font
-                            mirror=True,  # add ticks to top/right axes
-                            tickwidth=1,  # tick width
-                            tickcolor='black',  # tick color
-                            ticklen=10,
-                            minor=dict(ticklen=5, tickcolor="black"))
-
-    fig.update_xaxes(title_text='x',
-                            showline=True,
-                            showticklabels=True,
-                            showgrid=False,
-                            gridcolor='lightgrey',
-                            linecolor='black',
-                            linewidth=1,
-                            ticks='outside',
-                            tickfont=font_dict,
-                            mirror=True,
-                            tickwidth=1,
-                            tickcolor='black',
-                            ticklen=10,
-                            minor=dict(ticklen=5, tickcolor="black"))
-    
-    st.plotly_chart(fig,theme=None)
