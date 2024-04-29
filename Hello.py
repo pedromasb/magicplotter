@@ -133,7 +133,9 @@ if upl_file is not None:
                                 tickfont=font_dict, # tick label font
                                 mirror=True,  # add ticks to top/right axes
                                 tickwidth=1,  # tick width
-                                tickcolor='black')  # tick color
+                                tickcolor='black',  # tick color
+                                ticklen=10,
+                                minor=dict(ticklen=5, tickcolor="black"))
 
         fig_scatter.update_xaxes(title_text=f'{x_label}',
                                 showline=True,
@@ -146,7 +148,10 @@ if upl_file is not None:
                                 tickfont=font_dict,
                                 mirror=True,
                                 tickwidth=1,
-                                tickcolor='black')
+                                tickcolor='black',
+                                ticklen=10,
+                                minor=dict(ticklen=5, tickcolor="black"))
+        
 
         cols_layout = st.columns(4)
         with cols_layout[0]:
@@ -158,13 +163,32 @@ if upl_file is not None:
             if y_rev:
                 fig_scatter.update_yaxes(autorange='reversed')
         with cols_layout[2]:
-            x_grid = st.checkbox('X Grid')
+            x_rev = st.checkbox('Log X axis')
+            if x_rev:
+                fig_scatter.update_xaxes(type="log")
+        with cols_layout[3]:
+            y_rev = st.checkbox('Log Y axis')
+            if y_rev:
+                fig_scatter.update_yaxes(type="log")
+        
+        cols_layout = st.columns(4)
+        with cols_layout[0]:
+            x_grid = st.checkbox('X grid')
             if x_grid:
                 fig_scatter.update_xaxes(showgrid=True)
-        with cols_layout[3]:
-            x_grid = st.checkbox('Y Grid')
+        with cols_layout[1]:
+            x_grid = st.checkbox('Y grid')
             if x_grid:
                 fig_scatter.update_yaxes(showgrid=True)
+        with cols_layout[2]:
+            x_grid = st.checkbox('X minor grid')
+            if x_grid:
+                fig_scatter.update_xaxes(minor=dict(ticklen=5, tickcolor="black",showgrid=True))
+        with cols_layout[3]:
+            x_grid = st.checkbox('Y minor grid')
+            if x_grid:
+                fig_scatter.update_yaxes(minor=dict(ticklen=5, tickcolor="black",showgrid=True))
+
 
         st.plotly_chart(fig_scatter,theme=None)
 
@@ -220,7 +244,9 @@ else:
                             tickfont=font_dict, # tick label font
                             mirror=True,  # add ticks to top/right axes
                             tickwidth=1,  # tick width
-                            tickcolor='black')  # tick color
+                            tickcolor='black',  # tick color
+                            ticklen=10,
+                            minor=dict(ticklen=5, tickcolor="black"))
 
     fig_scatter.update_xaxes(title_text='x',
                             showline=True,
@@ -233,6 +259,8 @@ else:
                             tickfont=font_dict,
                             mirror=True,
                             tickwidth=1,
-                            tickcolor='black')
+                            tickcolor='black',
+                            ticklen=10,
+                            minor=dict(ticklen=5, tickcolor="black"))
     
     st.plotly_chart(fig_scatter,theme=None)
