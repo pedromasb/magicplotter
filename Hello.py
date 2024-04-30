@@ -9,11 +9,6 @@ st.set_page_config(
     page_icon="🚀",
 )
 
-
-with st.sidebar:
-    st.page_link('Hello.py', label='Scatter Plot')
-    st.page_link('pages/line_plot.py', label='Line Plot')
-
 st.title('MagicPlotter')
 st.subheader('by Pedro Mas Buitrago &nbsp; [![pedro](https://img.shields.io/badge/%20Click_me!-red?style=social&logo=github&label=pedromasb&labelColor=grey)](https://pedromasb.github.io/)')
 
