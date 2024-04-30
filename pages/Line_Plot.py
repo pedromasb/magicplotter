@@ -214,7 +214,9 @@ if upl_file is not None:
         with cols_layout[2]:
             st.download_button(label='Download Figure as png',data=fig_png,file_name='plotly_figure.png') 
 
-
+    if st.button('Click here to celebrate!',type="primary"):
+        st.balloons()
+        
 # -------------------------- If not file is uploaded
 
 else:

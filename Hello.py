@@ -47,7 +47,7 @@ if upl_file is not None:
         data = read_csv(upl_file,header=None,sep=r"\s+")
 
     st.write(data)
-
+    
     cols = st.multiselect(
         "Choose columns", list(data.columns),  [data.columns[1], data.columns[2]], max_selections=5
     )
@@ -235,6 +235,9 @@ if upl_file is not None:
             st.download_button(label='Download Figure as pdf',data=fig_pdf,file_name='plotly_figure.pdf')  
         with cols_layout[2]:
             st.download_button(label='Download Figure as png',data=fig_png,file_name='plotly_figure.png') 
+
+    if st.button('Click here to celebrate!',type="primary"):
+        st.balloons()
 
 # -------------------------- If not file is uploaded
 
