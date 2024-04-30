@@ -4,6 +4,11 @@ import pandas as pd
 import plotly.express as px
 import numpy as np
 
+st.set_page_config(
+    page_title="MagicPlotter",
+    page_icon="🚀"
+)
+
 st.title('MagicPlotter')
 st.subheader('by Pedro Mas Buitrago &nbsp; [![pedro](https://img.shields.io/badge/%20Click_me!-red?style=social&logo=github&label=pedromasb&labelColor=grey)](https://pedromasb.github.io/)')
 

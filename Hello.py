@@ -6,7 +6,7 @@ import numpy as np
 
 st.set_page_config(
     page_title="MagicPlotter",
-    page_icon="🚀",
+    page_icon="🚀"
 )
 
 st.title('MagicPlotter')
