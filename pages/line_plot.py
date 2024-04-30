@@ -8,7 +8,7 @@ from st_pages import Page, show_pages, add_page_title
 with st.sidebar:
     st.page_link('Hello.py', label='Scatter Plot')
     st.page_link('pages/line_plot.py', label='Line Plot')
-    
+
 st.title('MagicPlotter')
 st.subheader('by Pedro Mas Buitrago &nbsp; [![pedro](https://img.shields.io/badge/%20Click_me!-red?style=social&logo=github&label=pedromasb&labelColor=grey)](https://pedromasb.github.io/)')
 
@@ -213,3 +213,74 @@ if upl_file is not None:
             st.download_button(label='Download Figure as pdf',data=fig_pdf,file_name='plotly_figure.pdf')  
         with cols_layout[2]:
             st.download_button(label='Download Figure as png',data=fig_png,file_name='plotly_figure.png') 
+
+
+# -------------------------- If not file is uploaded
+
+else:
+    st.text("")
+    st.markdown('**Below you can find a demo. Choose your file to create your own plot!**')
+
+    data = read_csv('data/example_data.csv')
+    # Dictionary (key:value) with the colour associated with each feature for the plot
+    colour_map = {'y0': 'rgba(234, 85, 69,0.9)', 'y1': 'rgba(37, 189, 176, 0.9)', 'y2': 'rgba(31, 52, 64,0.9)', 'y3':'rgba(237, 191, 51,0.9)'}
+
+    # Dictionary (key:value) with the label associated with each feature for the legend
+    labels_map = {'y0': 'Data 0', 'y1': 'Data 1', 'y2': 'Data 2', 'y3':'Data 3'}
+
+    fig = px.line(data_frame=data.sort_values(by='x'),x='x',y=['y0','y1','y2','y3'],
+                            hover_name='obj',  # Name of the pop-up menu when we hover over a point
+                            width=800,
+                            height=600,
+                            color_discrete_map=colour_map)
+
+    # For each feature, we change the name to that included in the dictionary labels_map
+    fig.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
+
+    # ----------------- From here it is only for formatting. No need to change anything -----------------
+
+    # Choose the figure font
+    font_dict=dict(family='Arial',
+                  size=16,
+                  color='black')
+
+    # General figure formatting
+    fig.update_layout(font=font_dict,  # font formatting
+                              plot_bgcolor='white',  # background color
+                              width=900,  # figure width
+                              height=600,  # figure height
+                              title={'text':'Interactive Scatter Plot','x':0.5,'font':{'size':24}},  # Title formatting
+                              legend_title='Data Collections')
+
+    # x and y-axis formatting
+    fig.update_yaxes(title_text='Feature',  # axis title
+                            showline=True,  # add line at x=0
+                            showticklabels=True,
+                            showgrid=False,  # plot grid
+                            gridcolor='lightgrey',
+                            linecolor='black',  # line color
+                            linewidth=1, # line size
+                            ticks='outside',  # ticks outside/inside axis
+                            tickfont=font_dict, # tick label font
+                            mirror=True,  # add ticks to top/right axes
+                            tickwidth=1,  # tick width
+                            tickcolor='black',  # tick color
+                            ticklen=10,
+                            minor=dict(ticklen=5, tickcolor="black"))
+
+    fig.update_xaxes(title_text='x',
+                            showline=True,
+                            showticklabels=True,
+                            showgrid=False,
+                            gridcolor='lightgrey',
+                            linecolor='black',
+                            linewidth=1,
+                            ticks='outside',
+                            tickfont=font_dict,
+                            mirror=True,
+                            tickwidth=1,
+                            tickcolor='black',
+                            ticklen=10,
+                            minor=dict(ticklen=5, tickcolor="black"))
+    
+    st.plotly_chart(fig,theme=None)
