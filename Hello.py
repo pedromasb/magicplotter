@@ -22,14 +22,35 @@ st.markdown('---')
 st.markdown('## Scatter Plot')
 
 @st.cache_data()
-def read_csv(file):
-    data = pd.read_csv(file)
+def read_csv(file,header=0,sep=','):
+    data = pd.read_csv(file,header=header,sep=sep)
     return data
                
 upl_file = st.file_uploader('Choose a file')
 
 if upl_file is not None:
-    data = read_csv(upl_file)
+
+    sep_list = ['comma separated','space separated']
+        
+    cols_layout = st.columns(2)
+
+    with cols_layout[0]:
+        header_bool = st.checkbox('File has headers')
+    with cols_layout[1]:
+        sep_opt = st.selectbox("Separator character", sep_list)
+        
+    if (header_bool) & (sep_opt=='comma separated'):
+        data = read_csv(upl_file)
+
+    if (header_bool) & (sep_opt=='space separated'):
+        data = read_csv(upl_file,header=0,sep=r'\s+')
+
+    elif (~header_bool) & (sep_opt=='comma separated'):
+        data = read_csv(upl_file,header=None,sep=',')
+    
+    elif (~header_bool) & (sep_opt=='space separated'):
+        data = read_csv(upl_file,header=None,sep=r"\s+")
+
     st.write(data)
 
     cols = st.multiselect(
@@ -51,7 +72,7 @@ if upl_file is not None:
             x_label = st.text_input('X label','X')
         with cols_layout[1]:
             y_label = st.text_input('Y label','Y')
-
+            
         cols_layout = st.columns(3)
         with cols_layout[0]:
             w = st.number_input('Figure width',value=900,min_value=100,max_value=1200)
@@ -90,10 +111,10 @@ if upl_file is not None:
             edge_color = st.selectbox('Marker edge colour', ['white','black','grey','lightgrey'])
         
         legend_labels = ['x',l1,l2,l3,l4]
-        labels_map = dict([(col, l) for col, l in zip(data[cols].columns,legend_labels)])
+        labels_map = dict([(str(col), l) for col, l in zip(data[cols].columns,legend_labels)])
 
         colours = ['black',c1,c2,c3,c4]
-        colour_map = dict([(col, c) for col, c in zip(data[cols].columns,colours)])
+        colour_map = dict([(str(col), c) for col, c in zip(data[cols].columns,colours)])
 
         fig = px.scatter(data_frame=data, x=cols[0], y=cols[1:],
                                 color_discrete_map=colour_map)
