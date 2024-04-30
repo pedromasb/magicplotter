@@ -3,7 +3,6 @@ from streamlit.logger import get_logger
 import pandas as pd
 import plotly.express as px
 import numpy as np
-from st_pages import Page, show_pages, add_page_title
 
 st.set_page_config(
     page_title="MagicPlotter",
