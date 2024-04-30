@@ -10,6 +10,7 @@ st.set_page_config(
     page_icon="🚀",
 )
 
+
 with st.sidebar:
     st.page_link('Hello.py', label='Scatter Plot')
     st.page_link('pages/line_plot.py', label='Line Plot')
