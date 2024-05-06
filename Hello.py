@@ -150,7 +150,8 @@ if upl_file is not None:
                                 tickwidth=1,  # tick width
                                 tickcolor='black',  # tick color
                                 ticklen=10,
-                                minor=dict(ticklen=5, tickcolor="black"))
+                                minor=dict(ticklen=5, tickcolor="black"),
+                                title_standoff = 15)
 
         fig.update_xaxes(title_text=f'{x_label}',
                                 showline=True,
@@ -165,7 +166,8 @@ if upl_file is not None:
                                 tickwidth=1,
                                 tickcolor='black',
                                 ticklen=10,
-                                minor=dict(ticklen=5, tickcolor="black"))
+                                minor=dict(ticklen=5, tickcolor="black"),
+                                title_standoff = 15)
         
 
         cols_layout = st.columns(4)
