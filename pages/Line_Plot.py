@@ -17,14 +17,35 @@ st.markdown('---')
 st.markdown('## Line Plot')
 
 @st.cache_data()
-def read_csv(file):
-    data = pd.read_csv(file)
+def read_csv(file,header=0,sep=','):
+    data = pd.read_csv(file,header=header,sep=sep)
     return data
-               
+
 upl_file = st.file_uploader('Choose a file')
 
 if upl_file is not None:
-    data = read_csv(upl_file)
+
+    sep_list = ['comma separated','space separated']
+        
+    cols_layout = st.columns(2)
+
+    with cols_layout[0]:
+        header_bool = st.checkbox('File has headers')
+    with cols_layout[1]:
+        sep_opt = st.selectbox("Separator character", sep_list)
+        
+    if (header_bool) & (sep_opt=='comma separated'):
+        data = read_csv(upl_file)
+
+    if (header_bool) & (sep_opt=='space separated'):
+        data = read_csv(upl_file,header=0,sep=r'\s+')
+
+    elif (~header_bool) & (sep_opt=='comma separated'):
+        data = read_csv(upl_file,header=None,sep=',')
+    
+    elif (~header_bool) & (sep_opt=='space separated'):
+        data = read_csv(upl_file,header=None,sep=r"\s+")
+
     st.write(data)
 
     cols = st.multiselect(
@@ -57,13 +78,13 @@ if upl_file is not None:
 
         cols_layout = st.columns(4)
         with cols_layout[0]:
-            c1 = st.text_input('Colour #1',value='rgba(234,85,69,0.7)')
+            c1 = st.text_input('Color #1',value='rgba(234,85,69,0.7)')
         with cols_layout[1]:
-            c2 = st.text_input('Colour #2',value='rgba(37,189,176,0.7)')
+            c2 = st.text_input('Color #2',value='rgba(37,189,176,0.7)')
         with cols_layout[2]:
-            c3 = st.text_input('Colour #3',value='rgba(31,52,64,0.7)')
+            c3 = st.text_input('Color #3',value='rgba(31,52,64,0.7)')
         with cols_layout[3]:
-            c4 = st.text_input('Colour #4',value='rgba(237,191,51,0.7)')
+            c4 = st.text_input('Color #4',value='rgba(237,191,51,0.7)')
 
         cols_layout = st.columns(4)
         with cols_layout[0]:
@@ -80,10 +101,10 @@ if upl_file is not None:
         mk_size = st.slider('Marker size',value=8,min_value=1,max_value=20)
         
         legend_labels = ['x',l1,l2,l3,l4]
-        labels_map = dict([(col, l) for col, l in zip(data[cols].columns,legend_labels)])
+        labels_map = dict([(str(col), l) for col, l in zip(data[cols].columns,legend_labels)])
 
         colours = ['black',c1,c2,c3,c4]
-        colour_map = dict([(col, c) for col, c in zip(data[cols].columns,colours)])
+        colour_map = dict([(str(col), c) for col, c in zip(data[cols].columns,colours)])
 
         fig = px.line(data_frame=data.sort_values(by=cols[0]), x=cols[0], y=cols[1:],
                                 color_discrete_map=colour_map)

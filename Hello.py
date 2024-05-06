@@ -78,13 +78,13 @@ if upl_file is not None:
 
         cols_layout = st.columns(4)
         with cols_layout[0]:
-            c1 = st.text_input('Colour #1',value='rgba(234,85,69,0.7)')
+            c1 = st.text_input('Color #1',value='rgba(234,85,69,0.7)')
         with cols_layout[1]:
-            c2 = st.text_input('Colour #2',value='rgba(37,189,176,0.7)')
+            c2 = st.text_input('Color #2',value='rgba(37,189,176,0.7)')
         with cols_layout[2]:
-            c3 = st.text_input('Colour #3',value='rgba(31,52,64,0.7)')
+            c3 = st.text_input('Color #3',value='rgba(31,52,64,0.7)')
         with cols_layout[3]:
-            c4 = st.text_input('Colour #4',value='rgba(237,191,51,0.7)')
+            c4 = st.text_input('Color #4',value='rgba(237,191,51,0.7)')
 
         cols_layout = st.columns(4)
         with cols_layout[0]:
@@ -103,7 +103,7 @@ if upl_file is not None:
         with cols_layout[0]:
             edge_w = st.slider('Marker edge width',value=0.7,min_value=0.0,max_value=2.0)
         with cols_layout[1]:
-            edge_color = st.selectbox('Marker edge colour', ['white','black','grey','lightgrey'])
+            edge_color = st.selectbox('Marker edge color', ['white','black','grey','lightgrey'])
         
         legend_labels = ['x',l1,l2,l3,l4]
         labels_map = dict([(str(col), l) for col, l in zip(data[cols].columns,legend_labels)])

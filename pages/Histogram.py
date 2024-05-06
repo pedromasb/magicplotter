@@ -17,22 +17,43 @@ st.markdown('---')
 st.markdown('## Histogram')
 
 @st.cache_data()
-def read_csv(file):
-    data = pd.read_csv(file)
+def read_csv(file,header=0,sep=','):
+    data = pd.read_csv(file,header=header,sep=sep)
     return data
                
 upl_file = st.file_uploader('Choose a file')
 
 if upl_file is not None:
-    data = read_csv(upl_file)
+
+    sep_list = ['comma separated','space separated']
+        
+    cols_layout = st.columns(2)
+
+    with cols_layout[0]:
+        header_bool = st.checkbox('File has headers')
+    with cols_layout[1]:
+        sep_opt = st.selectbox("Separator character", sep_list)
+        
+    if (header_bool) & (sep_opt=='comma separated'):
+        data = read_csv(upl_file)
+
+    if (header_bool) & (sep_opt=='space separated'):
+        data = read_csv(upl_file,header=0,sep=r'\s+')
+
+    elif (~header_bool) & (sep_opt=='comma separated'):
+        data = read_csv(upl_file,header=None,sep=',')
+    
+    elif (~header_bool) & (sep_opt=='space separated'):
+        data = read_csv(upl_file,header=None,sep=r"\s+")
+
     st.write(data)
 
     cols = st.multiselect(
         "Choose columns", list(data.columns),  [data.columns[1], data.columns[2]], max_selections=5
     )
 
-    if len(cols)<2:
-        st.error("Please select at least two columns.")
+    if len(cols)<1:
+        st.error("Please select at least one column.")
 
     else:    
         st.write(cols)
@@ -57,13 +78,13 @@ if upl_file is not None:
 
         cols_layout = st.columns(4)
         with cols_layout[0]:
-            c1 = st.text_input('Colour #1',value='rgba(234,85,69,0.7)')
+            c1 = st.text_input('Color #1',value='rgba(234,85,69,0.7)')
         with cols_layout[1]:
-            c2 = st.text_input('Colour #2',value='rgba(37,189,176,0.7)')
+            c2 = st.text_input('Color #2',value='rgba(37,189,176,0.7)')
         with cols_layout[2]:
-            c3 = st.text_input('Colour #3',value='rgba(31,52,64,0.7)')
+            c3 = st.text_input('Color #3',value='rgba(31,52,64,0.7)')
         with cols_layout[3]:
-            c4 = st.text_input('Colour #4',value='rgba(237,191,51,0.7)')
+            c4 = st.text_input('Color #4',value='rgba(237,191,51,0.7)')
 
         cols_layout = st.columns(4)
         with cols_layout[0]:
@@ -76,19 +97,42 @@ if upl_file is not None:
             l4 = st.text_input('Label #4',value='Data 4')
 
         font_size = st.slider('Default font size',value=16,min_value=5,max_value=24)
-        lw = st.slider('Line width',value=2,min_value=1,max_value=5)
-        mk_size = st.slider('Marker size',value=8,min_value=1,max_value=20)
-        
-        legend_labels = ['x',l1,l2,l3,l4]
-        labels_map = dict([(col, l) for col, l in zip(data[cols].columns,legend_labels)])
+        lw = st.slider('Line width',value=2,min_value=0,max_value=5)
 
-        colours = ['black',c1,c2,c3,c4]
-        colour_map = dict([(col, c) for col, c in zip(data[cols].columns,colours)])
+        barmode_list = ['overlay','group','stack']
+        norm_list = [None,'probability','density']
 
-        fig = px.line(data_frame=data.sort_values(by=cols[0]), x=cols[0], y=cols[1:],
-                                color_discrete_map=colour_map)
+        cols_layout = st.columns(4)
+        with cols_layout[0]:
+            lc = st.text_input('Line color',value='rgba(0,0,0,1)')
+        with cols_layout[1]:
+            bmode = st.selectbox("Bar mode", barmode_list)
+        with cols_layout[2]:
+            norm_mode = st.selectbox("Normalize", norm_list)
+
+        legend_labels = [l1,l2,l3,l4]
+        labels_map = dict([(str(col), l) for col, l in zip(data[cols].columns,legend_labels)])
+
+        colours = [c1,c2,c3,c4]
+        colour_map = dict([(str(col), c) for col, c in zip(data[cols].columns,colours)])
+
+        with cols_layout[3]:
+            bar_orientation = st.selectbox("Orientation", ['Vertical','Horizontal'])
+            if bar_orientation == 'Horizontal':
+                fig = px.histogram(data_frame=data, y=cols,
+                                color_discrete_map=colour_map,
+                                barmode=bmode,
+                                histfunc='count',
+                                histnorm = norm_mode)
+            elif bar_orientation == 'Vertical':
+                fig = px.histogram(data_frame=data, x=cols,
+                                color_discrete_map=colour_map,
+                                barmode=bmode,
+                                histfunc='count',
+                                histnorm = norm_mode)
+            else: pass       
         
-        fig.update_traces(line={'width': lw},marker={'size':mk_size})
+        fig.update_traces(marker=dict(line=dict(width=lw,color=lc)))
 
         # For each feature, we change the name to that included in the dictionary labels_map
         fig.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
@@ -197,10 +241,6 @@ if upl_file is not None:
             yrot = st.checkbox('Rotate Y labels')
             if yrot:
                 fig.update_yaxes(tickangle= -90)
-
-        pts = st.checkbox('Add data points')
-        if pts:
-            fig.update_traces(mode='markers+lines')
 
         st.plotly_chart(fig,theme=None)
 
