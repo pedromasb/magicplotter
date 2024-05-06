@@ -49,9 +49,9 @@ if upl_file is not None:
 
         cols_layout = st.columns(3)
         with cols_layout[0]:
-            w = st.number_input('Figure width',value=900,min_value=100,max_value=1200)
+            w = st.number_input('Figure width',value=900,min_value=100,max_value=1200,step=20)
         with cols_layout[1]:
-            h = st.number_input('Figure height',value=600,min_value=100,max_value=1200)
+            h = st.number_input('Figure height',value=600,min_value=100,max_value=1200,step=20)
         with cols_layout[2]:
             font_fam = st.selectbox("Choose font family", font_list)
 
@@ -253,7 +253,7 @@ else:
                               plot_bgcolor='white',  # background color
                               width=900,  # figure width
                               height=600,  # figure height
-                              title={'text':'Interactive Scatter Plot','x':0.5,'font':{'size':24}},  # Title formatting
+                              title={'text':'Interactive Line Plot','x':0.5,'font':{'size':24}},  # Title formatting
                               legend_title='Data Collections')
 
     # x and y-axis formatting

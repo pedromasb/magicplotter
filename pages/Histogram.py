@@ -14,40 +14,19 @@ st.subheader('by Pedro Mas Buitrago &nbsp; [![pedro](https://img.shields.io/badg
 
 st.markdown('---')
 
-st.markdown('## Scatter Plot')
+st.markdown('## Histogram')
 
 @st.cache_data()
-def read_csv(file,header=0,sep=','):
-    data = pd.read_csv(file,header=header,sep=sep)
+def read_csv(file):
+    data = pd.read_csv(file)
     return data
                
 upl_file = st.file_uploader('Choose a file')
 
 if upl_file is not None:
-
-    sep_list = ['comma separated','space separated']
-        
-    cols_layout = st.columns(2)
-
-    with cols_layout[0]:
-        header_bool = st.checkbox('File has headers')
-    with cols_layout[1]:
-        sep_opt = st.selectbox("Separator character", sep_list)
-        
-    if (header_bool) & (sep_opt=='comma separated'):
-        data = read_csv(upl_file)
-
-    if (header_bool) & (sep_opt=='space separated'):
-        data = read_csv(upl_file,header=0,sep=r'\s+')
-
-    elif (~header_bool) & (sep_opt=='comma separated'):
-        data = read_csv(upl_file,header=None,sep=',')
-    
-    elif (~header_bool) & (sep_opt=='space separated'):
-        data = read_csv(upl_file,header=None,sep=r"\s+")
-
+    data = read_csv(upl_file)
     st.write(data)
-    
+
     cols = st.multiselect(
         "Choose columns", list(data.columns),  [data.columns[1], data.columns[2]], max_selections=5
     )
@@ -67,7 +46,7 @@ if upl_file is not None:
             x_label = st.text_input('X label','X')
         with cols_layout[1]:
             y_label = st.text_input('Y label','Y')
-            
+
         cols_layout = st.columns(3)
         with cols_layout[0]:
             w = st.number_input('Figure width',value=900,min_value=100,max_value=1200,step=20)
@@ -97,27 +76,19 @@ if upl_file is not None:
             l4 = st.text_input('Label #4',value='Data 4')
 
         font_size = st.slider('Default font size',value=16,min_value=5,max_value=24)
-        mk_size = st.slider('Marker size',value=15,min_value=2,max_value=24)
-
-        cols_layout = st.columns(2)
-        with cols_layout[0]:
-            edge_w = st.slider('Marker edge width',value=0.7,min_value=0.0,max_value=2.0)
-        with cols_layout[1]:
-            edge_color = st.selectbox('Marker edge colour', ['white','black','grey','lightgrey'])
+        lw = st.slider('Line width',value=2,min_value=1,max_value=5)
+        mk_size = st.slider('Marker size',value=8,min_value=1,max_value=20)
         
         legend_labels = ['x',l1,l2,l3,l4]
-        labels_map = dict([(str(col), l) for col, l in zip(data[cols].columns,legend_labels)])
+        labels_map = dict([(col, l) for col, l in zip(data[cols].columns,legend_labels)])
 
         colours = ['black',c1,c2,c3,c4]
-        colour_map = dict([(str(col), c) for col, c in zip(data[cols].columns,colours)])
+        colour_map = dict([(col, c) for col, c in zip(data[cols].columns,colours)])
 
-        fig = px.scatter(data_frame=data, x=cols[0], y=cols[1:],
+        fig = px.line(data_frame=data.sort_values(by=cols[0]), x=cols[0], y=cols[1:],
                                 color_discrete_map=colour_map)
         
-        fig.update_traces(marker={'size': mk_size,'line':{'width':edge_w,'color':edge_color}},
-                                            hovertemplate="<br>".join([
-                                            "X value: %{x}",
-                                            "Y value: %{y}"]))
+        fig.update_traces(line={'width': lw},marker={'size':mk_size})
 
         # For each feature, we change the name to that included in the dictionary labels_map
         fig.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
@@ -227,6 +198,10 @@ if upl_file is not None:
             if yrot:
                 fig.update_yaxes(tickangle= -90)
 
+        pts = st.checkbox('Add data points')
+        if pts:
+            fig.update_traces(mode='markers+lines')
+
         st.plotly_chart(fig,theme=None)
 
         fig_html = fig.to_html()
@@ -243,32 +218,30 @@ if upl_file is not None:
 
     if st.button('Click here to celebrate!',type="primary"):
         st.balloons()
-
+        
 # -------------------------- If not file is uploaded
 
 else:
     st.text("")
     st.markdown('**Below you can find a demo. Choose your file to create your own plot!**')
 
-    data = pd.read_csv('data/example_data.csv')
+    data = read_csv('data/example_data.csv')
     # Dictionary (key:value) with the colour associated with each feature for the plot
-    colour_map = {'y0': 'rgba(234, 85, 69,0.9)', 'y1': 'rgba(37, 189, 176, 0.9)', 'y2': 'rgba(31, 52, 64,0.9)', 'y3':'rgba(237, 191, 51,0.9)'}
+    colour_map = {'y0': 'rgba(234, 85, 69,0.9)','y1': 'rgba(31, 52, 64,0.9)'}
 
     # Dictionary (key:value) with the label associated with each feature for the legend
-    labels_map = {'y0': 'Data 0', 'y1': 'Data 1', 'y2': 'Data 2', 'y3':'Data 3'}
+    labels_map = {'y0': 'Data 0', 'y1': 'Data 1'}
 
-    fig = px.scatter(data_frame=data,x='x',y=['y0','y1','y2','y3'],
-                            size=abs(np.round(data.iloc[:,-1],2)*8),
+    fig = px.histogram(data_frame=data.sort_values(by='x'),x=['y0','y1'],
+                            hover_name='obj',  # Name of the pop-up menu when we hover over a point
+                            barmode='overlay',
+                            histfunc='count',
                             width=800,
                             height=600,
                             color_discrete_map=colour_map)
 
     # For each feature, we change the name to that included in the dictionary labels_map
     fig.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
-
-    fig.update_traces(hovertemplate="<br>".join([
-                       "X value: %{x}",
-                       "Y value: %{y}"]))
 
     # ----------------- From here it is only for formatting. No need to change anything -----------------
 
@@ -282,11 +255,11 @@ else:
                               plot_bgcolor='white',  # background color
                               width=900,  # figure width
                               height=600,  # figure height
-                              title={'text':'Interactive Scatter Plot','x':0.5,'font':{'size':24}},  # Title formatting
+                              title={'text':'Interactive Histogram','x':0.5,'font':{'size':24}},  # Title formatting
                               legend_title='Data Collections')
 
     # x and y-axis formatting
-    fig.update_yaxes(title_text='Feature',  # axis title
+    fig.update_yaxes(title_text='Count',  # axis title
                             showline=True,  # add line at x=0
                             showticklabels=True,
                             showgrid=False,  # plot grid
