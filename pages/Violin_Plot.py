@@ -3,6 +3,7 @@ from streamlit.logger import get_logger
 import pandas as pd
 import plotly.express as px
 import numpy as np
+import plotly.graph_objects as go
 
 st.set_page_config(
     page_title="MagicPlotter",
@@ -78,13 +79,13 @@ if upl_file is not None:
 
         cols_layout = st.columns(4)
         with cols_layout[0]:
-            c1 = st.text_input('Color #1',value='rgba(234,85,69,0.7)')
+            c1 = st.text_input('Color #1',value='rgba(234,85,69,0.4)')
         with cols_layout[1]:
-            c2 = st.text_input('Color #2',value='rgba(37,189,176,0.7)')
+            c2 = st.text_input('Color #2',value='rgba(37,189,176,0.4)')
         with cols_layout[2]:
-            c3 = st.text_input('Color #3',value='rgba(31,52,64,0.7)')
+            c3 = st.text_input('Color #3',value='rgba(31,52,64,0.4)')
         with cols_layout[3]:
-            c4 = st.text_input('Color #4',value='rgba(237,191,51,0.7)')
+            c4 = st.text_input('Color #4',value='rgba(237,191,51,0.4)')
 
         cols_layout = st.columns(4)
         with cols_layout[0]:
@@ -97,48 +98,39 @@ if upl_file is not None:
             l4 = st.text_input('Label #4',value='Data 4')
 
         font_size = st.slider('Default font size',value=16,min_value=5,max_value=24)
-        lw = st.slider('Line width',value=2,min_value=0,max_value=5)
+        lw = st.slider('Violin line width',value=2,min_value=1,max_value=5)
+        mk_lw = st.slider('Marker line width',value=1,min_value=0,max_value=5)
 
-        barmode_list = ['overlay','group','stack']
-        norm_list = [None,'probability','density']
+        spanmode_list = ['soft','hard']
+        pts_list = ['all',False,'outliers']
 
-        cols_layout = st.columns(4)
+        cols_layout = st.columns(2)
         with cols_layout[0]:
-            lc = st.text_input('Line color',value='rgba(0,0,0,1)')
+            spmode = st.selectbox("Span mode", spanmode_list)
         with cols_layout[1]:
-            bmode = st.selectbox("Bar mode", barmode_list)
-        with cols_layout[2]:
-            norm_mode = st.selectbox("Normalize", norm_list)
+            pts = st.selectbox("Points", pts_list)
 
         legend_labels = [l1,l2,l3,l4]
-        labels_map = dict([(str(col), l) for col, l in zip(data[cols].columns,legend_labels)])
 
         colours = [c1,c2,c3,c4]
-        colour_map = dict([(str(col), c) for col, c in zip(data[cols].columns,colours)])
+        colours_noalpha = [c.replace(c.split(',')[3],'1)') for c in colours]
 
-        with cols_layout[3]:
-            bar_orientation = st.selectbox("Orientation", ['Vertical','Horizontal'])
-            if bar_orientation == 'Horizontal':
-                fig = px.histogram(data_frame=data, y=cols,
-                                color_discrete_map=colour_map,
-                                barmode=bmode,
-                                histfunc='count',
-                                histnorm = norm_mode)
-            elif bar_orientation == 'Vertical':
-                fig = px.histogram(data_frame=data, x=cols,
-                                color_discrete_map=colour_map,
-                                barmode=bmode,
-                                histfunc='count',
-                                histnorm = norm_mode)
-            else: pass       
-        
-        fig.update_traces(marker=dict(line=dict(width=lw,color=lc)))
+        fig_violin = go.Figure()
 
-        # For each feature, we change the name to that included in the dictionary labels_map
-        fig.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
-
+        for i, var in enumerate(cols):
+            fig_violin.add_trace(go.Violin(y=data[var],
+                                        name=legend_labels[i],
+                                        points=pts,
+                                        pointpos=-1.8,
+                                        line_color=colours_noalpha[i],
+                                        spanmode=spmode,
+                                        line=dict(width=lw),
+                                        marker=dict(color=colours[i],line=dict(width=mk_lw,color=colours_noalpha[i])),
+                                        fillcolor=colours[i],
+                                        box_visible=True,
+                                        meanline_visible=True))
+            
         # ----------------- From here it is only for formatting. No need to change anything -----------------
-
 
         # Choose the figure font
         font_dict=dict(family=f'{font_fam}',
@@ -146,7 +138,7 @@ if upl_file is not None:
                         color='black')
 
         # General figure formatting
-        fig.update_layout(font=font_dict,  # font formatting
+        fig_violin.update_layout(font=font_dict,  # font formatting
                                     plot_bgcolor='white',  # plot background color
                                     paper_bgcolor= 'white', # background color
                                     width=w,  # figure width
@@ -155,7 +147,7 @@ if upl_file is not None:
                                     legend_title='Data Collections')
 
         # x and y-axis formatting
-        fig.update_yaxes(title_text=f'{y_label}',  # axis title
+        fig_violin.update_yaxes(title_text=f'{y_label}',  # axis title
                                 showline=True, 
                                 showticklabels=True,
                                 showgrid=False,  # plot grid
@@ -171,7 +163,7 @@ if upl_file is not None:
                                 minor=dict(ticklen=5, tickcolor="black"),
                                 title_standoff = 15)
 
-        fig.update_xaxes(title_text=f'{x_label}',
+        fig_violin.update_xaxes(title_text=f'{x_label}',
                                 showline=True,
                                 showticklabels=True,
                                 showgrid=False,
@@ -192,61 +184,53 @@ if upl_file is not None:
         with cols_layout[0]:
             x_rev = st.checkbox('Reverse X axis')
             if x_rev:
-                fig.update_xaxes(autorange='reversed')
+                fig_violin.update_xaxes(autorange='reversed')
         with cols_layout[1]:
             y_rev = st.checkbox('Reverse Y axis')
             if y_rev:
-                fig.update_yaxes(autorange='reversed')
+                fig_violin.update_yaxes(autorange='reversed')
         with cols_layout[2]:
-            x_rev = st.checkbox('Log X axis')
-            if x_rev:
-                fig.update_xaxes(type="log")
-        with cols_layout[3]:
             y_rev = st.checkbox('Log Y axis')
             if y_rev:
-                fig.update_yaxes(type="log")
+                fig_violin.update_yaxes(type="log")
+        with cols_layout[3]:
+            x_grid = st.checkbox('X grid')
+            if x_grid:
+                fig_violin.update_xaxes(showgrid=True)        
         
         cols_layout = st.columns(4)
         with cols_layout[0]:
-            x_grid = st.checkbox('X grid')
-            if x_grid:
-                fig.update_xaxes(showgrid=True)
-        with cols_layout[1]:
             y_grid = st.checkbox('Y grid')
             if y_grid:
-                fig.update_yaxes(showgrid=True)
-        with cols_layout[2]:
-            x_mingrid = st.checkbox('X minor grid')
-            if x_mingrid:
-                fig.update_xaxes(minor=dict(ticklen=5, tickcolor="black",showgrid=True))
-        with cols_layout[3]:
+                fig_violin.update_yaxes(showgrid=True)
+        with cols_layout[1]:
             y_mingrid = st.checkbox('Y minor grid')
             if y_mingrid:
-                fig.update_yaxes(minor=dict(ticklen=5, tickcolor="black",showgrid=True))
-
-        cols_layout = st.columns(4)
-        with cols_layout[0]:
+                fig_violin.update_yaxes(minor=dict(ticklen=5, tickcolor="black",showgrid=True))
+        with cols_layout[2]:
             xside = st.checkbox('Top X axis')
             if xside:
-                fig.update_layout(xaxis={'side': 'top'})
-        with cols_layout[1]:
+                fig_violin.update_layout(xaxis={'side': 'top'})
+        with cols_layout[3]:
             yside = st.checkbox('Right Y axis')
             if yside:
-                fig.update_layout(yaxis={'side': 'right'})
-        with cols_layout[2]:
+                fig_violin.update_layout(yaxis={'side': 'right'})
+        
+        cols_layout = st.columns(2)
+        with cols_layout[0]:
             xrot = st.checkbox('Rotate X labels')
             if xrot:
-                fig.update_xaxes(tickangle= -90)
-        with cols_layout[3]:
+                fig_violin.update_xaxes(tickangle= -90)
+        with cols_layout[1]:
             yrot = st.checkbox('Rotate Y labels')
             if yrot:
-                fig.update_yaxes(tickangle= -90)
+                fig_violin.update_yaxes(tickangle= -90)
 
-        st.plotly_chart(fig,theme=None)
+        st.plotly_chart(fig_violin,theme=None)
 
-        fig_html = fig.to_html()
-        fig_pdf = fig.to_image(format='pdf')
-        fig_png = fig.to_image(format='png',scale=5)
+        fig_html = fig_violin.to_html()
+        fig_pdf = fig_violin.to_image(format='pdf')
+        fig_png = fig_violin.to_image(format='png',scale=5)
 
         cols_layout = st.columns(3)
         with cols_layout[0]:
@@ -266,21 +250,30 @@ else:
     st.markdown('**Below you can find a demo. Choose your file to create your own plot!**')
 
     data = read_csv('data/example_data.csv')
+
+    variables = ['y0','y1','y2','y3']
+
     # Dictionary (key:value) with the colour associated with each feature for the plot
-    colour_map = {'y0': 'rgba(234, 85, 69, 0.9)','y1': 'rgba(31, 52, 64, 0.9)'}
+    colour_map = ['rgba(234, 85, 69, 0.4)','rgba(37, 189, 176, 0.4)','rgba(31, 52, 64, 0.4)','rgba(237, 191, 51, 0.4)']
+    colours = ['#ea5545','#25BDB0','#1F3440','#edbf33']
 
     # Dictionary (key:value) with the label associated with each feature for the legend
-    labels_map = {'y0': 'Data 0', 'y1': 'Data 1'}
+    labels_map = {'y0': 'Data 0', 'y1': 'Data 1', 'y2': 'Data 2', 'y3':'Data 3'}
 
-    fig = px.histogram(data_frame=data,x=['y0','y1'],
-                            barmode='overlay',
-                            histfunc='count',
-                            width=800,
-                            height=600,
-                            color_discrete_map=colour_map)
+    fig_violin = go.Figure()
+
+    for i, var in enumerate(variables):
+        fig_violin.add_trace(go.Violin(y=data[var],
+                                    name=var,
+                                    points='all',
+                                    pointpos=-1.8,
+                                    line_color=colours[i],
+                                    fillcolor=colour_map[i],
+                                    box_visible=True,
+                                    meanline_visible=True))
 
     # For each feature, we change the name to that included in the dictionary labels_map
-    fig.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
+    # fig.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
 
     # ----------------- From here it is only for formatting. No need to change anything -----------------
 
@@ -290,15 +283,15 @@ else:
                   color='black')
 
     # General figure formatting
-    fig.update_layout(font=font_dict,  # font formatting
+    fig_violin.update_layout(font=font_dict,  # font formatting
                               plot_bgcolor='white',  # background color
                               width=900,  # figure width
                               height=600,  # figure height
-                              title={'text':'Interactive Histogram','x':0.5,'font':{'size':24}},  # Title formatting
+                              title={'text':'Interactive Violin Plot','x':0.5,'font':{'size':24}},  # Title formatting
                               legend_title='Data Collections')
 
     # x and y-axis formatting
-    fig.update_yaxes(title_text='Count',  # axis title
+    fig_violin.update_yaxes(title_text='Count',  # axis title
                             showline=True,  # add line at x=0
                             showticklabels=True,
                             showgrid=False,  # plot grid
@@ -313,7 +306,7 @@ else:
                             ticklen=10,
                             minor=dict(ticklen=5, tickcolor="black"))
 
-    fig.update_xaxes(title_text='x',
+    fig_violin.update_xaxes(title_text='x',
                             showline=True,
                             showticklabels=True,
                             showgrid=False,
@@ -328,4 +321,4 @@ else:
                             ticklen=10,
                             minor=dict(ticklen=5, tickcolor="black"))
     
-    st.plotly_chart(fig,theme=None)
+    st.plotly_chart(fig_violin,theme=None)
