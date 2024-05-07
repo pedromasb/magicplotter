@@ -6,8 +6,7 @@ import numpy as np
 
 st.set_page_config(
     page_title="MagicPlotter",
-    page_icon="🚀"
-)
+    page_icon="🚀")
 
 st.title('MagicPlotter')
 st.subheader('by Pedro Mas Buitrago &nbsp; [![pedro](https://img.shields.io/badge/%20Click_me!-red?style=social&logo=github&label=pedromasb&labelColor=grey)](https://pedromasb.github.io/)')
@@ -60,21 +59,25 @@ if upl_file is not None:
 
         font_list = ["Arial","Courier New", "Open Sans"]
 
-        fig_title = st.text_input('Figure title',value='', placeholder = 'Enter a title')
+        with st.sidebar:
 
-        cols_layout = st.columns(2)
-        with cols_layout[0]:
-            x_label = st.text_input('X label','X')
-        with cols_layout[1]:
-            y_label = st.text_input('Y label','Y')
-            
-        cols_layout = st.columns(3)
-        with cols_layout[0]:
-            w = st.number_input('Figure width',value=900,min_value=100,max_value=1200,step=20)
-        with cols_layout[1]:
-            h = st.number_input('Figure height',value=600,min_value=100,max_value=1200,step=20)
-        with cols_layout[2]:
-            font_fam = st.selectbox("Choose font family", font_list)
+            cols_layout = st.columns(2)
+            with cols_layout[0]:
+                fig_title = st.text_input('Figure title',value='', placeholder = 'Enter a title')
+            with cols_layout[1]:
+                font_fam = st.selectbox("Choose font family", font_list)
+
+            cols_layout = st.columns(2)                
+            with cols_layout[0]:
+                x_label = st.text_input('X label','X')
+            with cols_layout[1]:
+                y_label = st.text_input('Y label','Y')            
+
+            cols_layout = st.columns(2)
+            with cols_layout[0]:
+                w = st.number_input('Figure width',value=840,min_value=100,max_value=1200,step=20)
+            with cols_layout[1]:
+                h = st.number_input('Figure height',value=540,min_value=100,max_value=1200,step=20)
 
         cols_layout = st.columns(4)
         with cols_layout[0]:
@@ -96,14 +99,16 @@ if upl_file is not None:
         with cols_layout[3]:
             l4 = st.text_input('Label #4',value='Data 4')
 
-        font_size = st.slider('Default font size',value=16,min_value=5,max_value=24)
-        mk_size = st.slider('Marker size',value=15,min_value=2,max_value=24)
+        with st.sidebar:
 
-        cols_layout = st.columns(2)
-        with cols_layout[0]:
-            edge_w = st.slider('Marker edge width',value=0.7,min_value=0.0,max_value=2.0)
-        with cols_layout[1]:
-            edge_color = st.selectbox('Marker edge color', ['white','black','grey','lightgrey'])
+            font_size = st.slider('Default font size',value=16,min_value=5,max_value=24)
+            mk_size = st.slider('Marker size',value=15,min_value=2,max_value=24)
+
+            cols_layout = st.columns(2)
+            with cols_layout[0]:
+                edge_w = st.slider('Marker edge width',value=0.7,min_value=0.0,max_value=2.0)
+            with cols_layout[1]:
+                edge_color = st.selectbox('Marker edge color', ['white','black','grey','lightgrey'])        
         
         legend_labels = ['x',l1,l2,l3,l4]
         labels_map = dict([(str(col), l) for col, l in zip(data[cols].columns,legend_labels)])
@@ -280,8 +285,8 @@ else:
     # General figure formatting
     fig.update_layout(font=font_dict,  # font formatting
                               plot_bgcolor='white',  # background color
-                              width=900,  # figure width
-                              height=600,  # figure height
+                              width=840,  # figure width
+                              height=540,  # figure height
                               title={'text':'Interactive Scatter Plot','x':0.5,'font':{'size':24}},  # Title formatting
                               legend_title='Data Collections')
 

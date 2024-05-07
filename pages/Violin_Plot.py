@@ -71,9 +71,9 @@ if upl_file is not None:
 
         cols_layout = st.columns(3)
         with cols_layout[0]:
-            w = st.number_input('Figure width',value=900,min_value=100,max_value=1200,step=20)
+            w = st.number_input('Figure width',value=840,min_value=100,max_value=1200,step=20)
         with cols_layout[1]:
-            h = st.number_input('Figure height',value=600,min_value=100,max_value=1200,step=20)
+            h = st.number_input('Figure height',value=540,min_value=100,max_value=1200,step=20)
         with cols_layout[2]:
             font_fam = st.selectbox("Choose font family", font_list)
 
@@ -285,8 +285,8 @@ else:
     # General figure formatting
     fig_violin.update_layout(font=font_dict,  # font formatting
                               plot_bgcolor='white',  # background color
-                              width=900,  # figure width
-                              height=600,  # figure height
+                              width=840,  # figure width
+                              height=540,  # figure height
                               title={'text':'Interactive Violin Plot','x':0.5,'font':{'size':24}},  # Title formatting
                               legend_title='Data Collections')
 
