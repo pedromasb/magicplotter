@@ -105,7 +105,7 @@ if upl_file is not None:
             lw = st.slider('Line width',value=2,min_value=0,max_value=5)
 
         barmode_list = ['overlay','group','stack']
-        norm_list = [None,'probability','density']
+        norm_list = [None,'probability','density', 'probability density']
 
         cols_layout = st.columns(4)
         with cols_layout[0]:
