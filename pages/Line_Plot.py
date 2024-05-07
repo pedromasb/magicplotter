@@ -46,7 +46,7 @@ if upl_file is not None:
     elif (~header_bool) & (sep_opt=='space separated'):
         data = read_csv(upl_file,header=None,sep=r"\s+")
 
-    st.write(data)
+    st.write(data.head())
 
     cols = st.multiselect(
         "Choose columns", list(data.columns),  [data.columns[1], data.columns[2]], max_selections=5

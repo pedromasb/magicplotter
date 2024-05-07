@@ -45,12 +45,14 @@ if upl_file is not None:
     elif (~header_bool) & (sep_opt=='space separated'):
         data = read_csv(upl_file,header=None,sep=r"\s+")
 
-    st.write(data)
-    
+    data['ones'] = np.ones(len(data))
+
+    st.write(data.head())
+
     cols = st.multiselect(
         "Choose columns", list(data.columns),  [data.columns[1], data.columns[2]], max_selections=5
-    )
-
+        )
+        
     if len(cols)<2:
 
         st.error("Please select at least two columns.")
@@ -117,9 +119,9 @@ if upl_file is not None:
         colour_map = dict([(str(col), c) for col, c in zip(data[cols].columns,colours)])
 
         fig = px.scatter(data_frame=data, x=cols[0], y=cols[1:],
-                                color_discrete_map=colour_map)
+                         color_discrete_map=colour_map)
         
-        fig.update_traces(marker={'size': mk_size,'line':{'width':edge_w,'color':edge_color}},
+        fig.update_traces(marker={'size':mk_size,'line':{'width':edge_w,'color':edge_color}},
                                             hovertemplate="<br>".join([
                                             "X value: %{x}",
                                             "Y value: %{y}"]))
@@ -128,7 +130,6 @@ if upl_file is not None:
         fig.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
 
         # ----------------- From here it is only for formatting. No need to change anything -----------------
-
 
         # Choose the figure font
         font_dict=dict(family=f'{font_fam}',
@@ -257,21 +258,18 @@ else:
 
     data = pd.read_csv('data/example_data.csv')
     # Dictionary (key:value) with the colour associated with each feature for the plot
-    colour_map = {'y0': 'rgba(234, 85, 69,0.9)', 'y1': 'rgba(37, 189, 176, 0.9)', 'y2': 'rgba(31, 52, 64,0.9)', 'y3':'rgba(237, 191, 51,0.9)'}
+    colour_map = {'y0': 'rgba(234, 85, 69,0.7)', 'y1': 'rgba(37, 189, 176, 0.7)', 'y2': 'rgba(31, 52, 64,0.7)', 'y3':'rgba(237, 191, 51,0.7)'}
 
     # Dictionary (key:value) with the label associated with each feature for the legend
     labels_map = {'y0': 'Data 0', 'y1': 'Data 1', 'y2': 'Data 2', 'y3':'Data 3'}
 
     fig = px.scatter(data_frame=data,x='x',y=['y0','y1','y2','y3'],
-                            size=abs(np.round(data.iloc[:,-1],2)*8),
-                            width=800,
-                            height=600,
                             color_discrete_map=colour_map)
 
     # For each feature, we change the name to that included in the dictionary labels_map
     fig.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
 
-    fig.update_traces(hovertemplate="<br>".join([
+    fig.update_traces(marker={'size':12},hovertemplate="<br>".join([
                        "X value: %{x}",
                        "Y value: %{y}"]))
 
