@@ -49,7 +49,7 @@ if upl_file is not None:
     st.write(data)
 
     cols = st.multiselect(
-        "Choose columns", list(data.columns),  [data.columns[1], data.columns[2]], max_selections=5
+        "Choose columns", list(data.columns),  [data.columns[1], data.columns[2]], max_selections=4
     )
 
     if len(cols)<1:
