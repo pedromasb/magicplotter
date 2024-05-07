@@ -11,9 +11,15 @@ st.set_page_config(
 st.title('MagicPlotter')
 st.subheader('by Pedro Mas Buitrago &nbsp; [![pedro](https://img.shields.io/badge/%20Click_me!-red?style=social&logo=github&label=pedromasb&labelColor=grey)](https://pedromasb.github.io/)')
 
-st.markdown('---')
+st.markdown('''
+            ---
+            ## Scatter Plot
+            
+            - Use the box below to select your own `csv` of `txt` file. 
+            - This tool supports both comma and space separated files, with or without headers. 
+            - Once the file is uploaded, adjust the settings until the data is displayed correctly in the table. 
+            ''')
 
-st.markdown('## Scatter Plot')
 
 @st.cache_data()
 def read_csv(file,header=0,sep=','):
