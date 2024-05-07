@@ -57,25 +57,28 @@ if upl_file is not None:
         st.error("Please select at least one column.")
 
     else:    
-        st.write(cols)
 
         font_list = ["Arial","Courier New", "Open Sans"]
 
-        fig_title = st.text_input('Figure title',value='', placeholder = 'Enter a title')
+        with st.sidebar:
 
-        cols_layout = st.columns(2)
-        with cols_layout[0]:
-            x_label = st.text_input('X label','X')
-        with cols_layout[1]:
-            y_label = st.text_input('Y label','Y')
+            cols_layout = st.columns(2)
+            with cols_layout[0]:
+                fig_title = st.text_input('Figure title',value='', placeholder = 'Enter a title')
+            with cols_layout[1]:
+                font_fam = st.selectbox("Choose font family", font_list)
 
-        cols_layout = st.columns(3)
-        with cols_layout[0]:
-            w = st.number_input('Figure width',value=840,min_value=100,max_value=1200,step=20)
-        with cols_layout[1]:
-            h = st.number_input('Figure height',value=540,min_value=100,max_value=1200,step=20)
-        with cols_layout[2]:
-            font_fam = st.selectbox("Choose font family", font_list)
+            cols_layout = st.columns(2)                
+            with cols_layout[0]:
+                x_label = st.text_input('X label','X')
+            with cols_layout[1]:
+                y_label = st.text_input('Y label','Y')            
+
+            cols_layout = st.columns(2)
+            with cols_layout[0]:
+                w = st.number_input('Figure width',value=840,min_value=100,max_value=1200,step=20)
+            with cols_layout[1]:
+                h = st.number_input('Figure height',value=540,min_value=100,max_value=1200,step=20)
 
         cols_layout = st.columns(4)
         with cols_layout[0]:
@@ -97,18 +100,23 @@ if upl_file is not None:
         with cols_layout[3]:
             l4 = st.text_input('Label #4',value='Data 4')
 
-        font_size = st.slider('Default font size',value=16,min_value=5,max_value=24)
-        lw = st.slider('Violin line width',value=2,min_value=1,max_value=5)
-        mk_lw = st.slider('Marker line width',value=1,min_value=0,max_value=5)
+        with st.sidebar:
+            font_size = st.slider('Default font size',value=16,min_value=5,max_value=24)
 
-        spanmode_list = ['soft','hard']
-        pts_list = ['all',False,'outliers']
+            cols_ly = st.columns(2)
+            with cols_ly[0]:
+                lw = st.slider('Violin line width',value=2,min_value=1,max_value=5)
+            with cols_ly[1]:
+                mk_lw = st.slider('Marker line width',value=1,min_value=0,max_value=5)
 
-        cols_layout = st.columns(2)
-        with cols_layout[0]:
-            spmode = st.selectbox("Span mode", spanmode_list)
-        with cols_layout[1]:
-            pts = st.selectbox("Points", pts_list)
+            spanmode_list = ['soft','hard']
+            pts_list = ['all',False,'outliers']
+
+            cols_layout = st.columns(2)
+            with cols_layout[0]:
+                spmode = st.selectbox("Span mode", spanmode_list)
+            with cols_layout[1]:
+                pts = st.selectbox("Points", pts_list)
 
         legend_labels = [l1,l2,l3,l4]
 
@@ -161,7 +169,7 @@ if upl_file is not None:
                                 tickcolor='black',  # tick color
                                 ticklen=10,
                                 minor=dict(ticklen=5, tickcolor="black"),
-                                title_standoff = 15)
+                                title_standoff = 8)
 
         fig_violin.update_xaxes(title_text=f'{x_label}',
                                 showline=True,
@@ -177,7 +185,7 @@ if upl_file is not None:
                                 tickcolor='black',
                                 ticklen=10,
                                 minor=dict(ticklen=5, tickcolor="black"),
-                                title_standoff = 15)
+                                title_standoff = 8)
         
 
         cols_layout = st.columns(4)

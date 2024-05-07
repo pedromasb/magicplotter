@@ -56,25 +56,28 @@ if upl_file is not None:
         st.error("Please select at least two columns.")
 
     else:    
-        st.write(cols)
 
         font_list = ["Arial","Courier New", "Open Sans"]
 
-        fig_title = st.text_input('Figure title',value='', placeholder = 'Enter a title')
+        with st.sidebar:
 
-        cols_layout = st.columns(2)
-        with cols_layout[0]:
-            x_label = st.text_input('X label','X')
-        with cols_layout[1]:
-            y_label = st.text_input('Y label','Y')
+            cols_layout = st.columns(2)
+            with cols_layout[0]:
+                fig_title = st.text_input('Figure title',value='', placeholder = 'Enter a title')
+            with cols_layout[1]:
+                font_fam = st.selectbox("Choose font family", font_list)
 
-        cols_layout = st.columns(3)
-        with cols_layout[0]:
-            w = st.number_input('Figure width',value=840,min_value=100,max_value=1200,step=20)
-        with cols_layout[1]:
-            h = st.number_input('Figure height',value=540,min_value=100,max_value=1200,step=20)
-        with cols_layout[2]:
-            font_fam = st.selectbox("Choose font family", font_list)
+            cols_layout = st.columns(2)                
+            with cols_layout[0]:
+                x_label = st.text_input('X label','X')
+            with cols_layout[1]:
+                y_label = st.text_input('Y label','Y')            
+
+            cols_layout = st.columns(2)
+            with cols_layout[0]:
+                w = st.number_input('Figure width',value=840,min_value=100,max_value=1200,step=20)
+            with cols_layout[1]:
+                h = st.number_input('Figure height',value=540,min_value=100,max_value=1200,step=20)
 
         cols_layout = st.columns(4)
         with cols_layout[0]:
@@ -96,10 +99,20 @@ if upl_file is not None:
         with cols_layout[3]:
             l4 = st.text_input('Label #4',value='Data 4')
 
-        font_size = st.slider('Default font size',value=16,min_value=5,max_value=24)
-        lw = st.slider('Line width',value=2,min_value=1,max_value=5)
-        mk_size = st.slider('Marker size',value=8,min_value=1,max_value=20)
-        
+        with st.sidebar:
+
+            font_size = st.slider('Default font size',value=16,min_value=5,max_value=24)
+
+            cols_ly = st.columns(2)
+            with cols_ly[0]:
+                lw = st.slider('Line width',value=2,min_value=1,max_value=5)
+            with cols_ly[1]:
+                mk_lw = st.slider('Marker line width',value=0,min_value=0,max_value=5)
+
+            cols_side = st.columns(2)
+            with cols_side[1]:
+                mk_size = st.slider('Marker size',value=8,min_value=1,max_value=20)
+            
         legend_labels = ['x',l1,l2,l3,l4]
         labels_map = dict([(str(col), l) for col, l in zip(data[cols].columns,legend_labels)])
 
@@ -109,7 +122,7 @@ if upl_file is not None:
         fig = px.line(data_frame=data.sort_values(by=cols[0]), x=cols[0], y=cols[1:],
                                 color_discrete_map=colour_map)
         
-        fig.update_traces(line={'width': lw},marker={'size':mk_size})
+        fig.update_traces(line={'width': lw},marker=dict(size=mk_size,line=dict(width=mk_lw)))
 
         # For each feature, we change the name to that included in the dictionary labels_map
         fig.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
@@ -146,7 +159,7 @@ if upl_file is not None:
                                 tickcolor='black',  # tick color
                                 ticklen=10,
                                 minor=dict(ticklen=5, tickcolor="black"),
-                                title_standoff = 15)
+                                title_standoff = 8)
 
         fig.update_xaxes(title_text=f'{x_label}',
                                 showline=True,
@@ -162,7 +175,7 @@ if upl_file is not None:
                                 tickcolor='black',
                                 ticklen=10,
                                 minor=dict(ticklen=5, tickcolor="black"),
-                                title_standoff = 15)
+                                title_standoff = 8)
         
 
         cols_layout = st.columns(4)
@@ -219,9 +232,11 @@ if upl_file is not None:
             if yrot:
                 fig.update_yaxes(tickangle= -90)
 
-        pts = st.checkbox('Add data points')
-        if pts:
-            fig.update_traces(mode='markers+lines')
+        with st.sidebar:
+            with cols_side[0]:
+                pts = st.checkbox('Add data points')
+                if pts:
+                    fig.update_traces(mode='markers+lines')
 
         st.plotly_chart(fig,theme=None)
 

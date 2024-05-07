@@ -52,10 +52,10 @@ if upl_file is not None:
     )
 
     if len(cols)<2:
+
         st.error("Please select at least two columns.")
 
     else:    
-        st.write(cols)
 
         font_list = ["Arial","Courier New", "Open Sans"]
 
@@ -159,7 +159,7 @@ if upl_file is not None:
                                 tickcolor='black',  # tick color
                                 ticklen=10,
                                 minor=dict(ticklen=5, tickcolor="black"),
-                                title_standoff = 15)
+                                title_standoff = 8)
 
         fig.update_xaxes(title_text=f'{x_label}',
                                 showline=True,
@@ -175,7 +175,7 @@ if upl_file is not None:
                                 tickcolor='black',
                                 ticklen=10,
                                 minor=dict(ticklen=5, tickcolor="black"),
-                                title_standoff = 15)
+                                title_standoff = 8)
         
 
         cols_layout = st.columns(4)
