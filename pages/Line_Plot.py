@@ -16,7 +16,7 @@ st.markdown('''
             ---
             ## Line Plot
             
-            - Use the box below to select your own `csv` of `txt` file. 
+            - Use the box below to select your own `csv` or `txt` file. 
             - This tool supports both comma and space separated files, with or without headers. 
             - Once the file is uploaded, adjust the settings until the data is displayed correctly in the table. 
             ''')
