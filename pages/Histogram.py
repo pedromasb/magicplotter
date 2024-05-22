@@ -22,34 +22,41 @@ st.markdown('''
             ''')
 
 @st.cache_data()
-def read_csv(file,header=0,sep=','):
-    data = pd.read_csv(file,header=header,sep=sep)
+def read_csv(file,header=0,sep=',',textq='"'):
+    data = pd.read_csv(file,header=header,sep=sep,quotechar=textq)
     return data
                
 upl_file = st.file_uploader('Choose a file')
 
 if upl_file is not None:
 
-    sep_list = ['comma separated','space separated']
+    sep_list = ['comma separated','space separated','custom character']
         
-    cols_layout = st.columns(2)
-
+    cols_layout = st.columns(4)
     with cols_layout[0]:
         header_bool = st.checkbox('File has headers')
     with cols_layout[1]:
         sep_opt = st.selectbox("Separator character", sep_list)
-        
-    if (header_bool) & (sep_opt=='comma separated'):
-        data = read_csv(upl_file)
+    with cols_layout[2]:
+        tqual = st.text_input('Text qualifier',value='"',max_chars=1)
 
-    if (header_bool) & (sep_opt=='space separated'):
-        data = read_csv(upl_file,header=0,sep=r'\s+')
+    if sep_opt == 'custom character':
+        with cols_layout[3]:
+            sep_custom = st.text_input('Custom separator charcater',value=',')
 
-    elif (~header_bool) & (sep_opt=='comma separated'):
-        data = read_csv(upl_file,header=None,sep=',')
+    header_dict = {True:0,False:None}
+    header_f = header_dict[header_bool]
     
-    elif (~header_bool) & (sep_opt=='space separated'):
-        data = read_csv(upl_file,header=None,sep=r"\s+")
+    if sep_opt == 'custom character':
+        sep_f = sep_custom
+
+    elif sep_opt == 'space separated':
+        sep_f = r"\s+"
+
+    elif sep_opt == 'comma separated':
+        sep_f = ','
+
+    data = read_csv(upl_file,header=header_f,sep=sep_f,textq=tqual)
 
     st.write(data.head())
 
@@ -167,6 +174,7 @@ if upl_file is not None:
         # x and y-axis formatting
         fig.update_yaxes(title_text=f'{y_label}',  # axis title
                                 showline=True, 
+                                zeroline=False,
                                 showticklabels=True,
                                 showgrid=False,  # plot grid
                                 gridcolor='lightgrey',
@@ -183,6 +191,7 @@ if upl_file is not None:
 
         fig.update_xaxes(title_text=f'{x_label}',
                                 showline=True,
+                                zeroline=False,
                                 showticklabels=True,
                                 showgrid=False,
                                 gridcolor='lightgrey',
@@ -309,8 +318,9 @@ else:
 
     # x and y-axis formatting
     fig.update_yaxes(title_text='Count',  # axis title
-                            showline=True,  # add line at x=0
+                            showline=True,  
                             showticklabels=True,
+                            zeroline=False,
                             showgrid=False,  # plot grid
                             gridcolor='lightgrey',
                             linecolor='black',  # line color
@@ -325,6 +335,7 @@ else:
 
     fig.update_xaxes(title_text='x',
                             showline=True,
+                            zeroline=False,
                             showticklabels=True,
                             showgrid=False,
                             gridcolor='lightgrey',

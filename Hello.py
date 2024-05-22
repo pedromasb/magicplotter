@@ -25,8 +25,13 @@ st.markdown('''
 
             With **MagicPlotter**, you will save up to **500 lines of code per visualization**. Interactive data-sharing has never been easier!
 
-            #### Streamlit's Data Privacy
+            &nbsp;
 
+            ''')
+
+st.info(''' 
+            **Streamlit Data Privacy**          
+          
             Streamlit Cloud is [SOC 2 Type 1 compliant](https://blog.streamlit.io/streamlit-cloud-is-now-soc-2-type-1-compliant/), which means they have been audited and
             found to have appropriate systems in place to ensure the security of the system (protecting against unauthorized access) and the confidentiality of the information 
             processed by the system (ensuring that sensitive data is accessed only by authorized individuals) at a specific point in time.
@@ -40,9 +45,5 @@ st.markdown('''
             - The user closes the browser tab where they uploaded the file.
 
             Additional details can be found in their [Trust and Security](https://docs.streamlit.io/deploy/streamlit-community-cloud/get-started/trust-and-security) policy.
-
-
-
-
-
+                    
             ''')
