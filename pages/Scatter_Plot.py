@@ -61,7 +61,7 @@ if upl_file is not None:
     st.write(data.head())
 
     cols = st.multiselect(
-        "Choose columns", list(data.columns),  [data.columns[1], data.columns[2]], max_selections=5
+        "Choose columns: The first selection will always be used for the X axis. Subsequent selections will be added as data collections on the Y axis.", list(data.columns),  [data.columns[1], data.columns[2]], max_selections=5
     )
 
     if len(cols)<2:

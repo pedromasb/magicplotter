@@ -62,7 +62,7 @@ if upl_file is not None:
     st.write(data.head())
 
     cols = st.multiselect(
-        "Choose columns", list(data.columns),  [data.columns[1], data.columns[2]], max_selections=4
+        "Choose columns", list(data.columns),  [data.columns[0]], max_selections=4
     )
 
     if len(cols)<1:
@@ -202,7 +202,7 @@ if upl_file is not None:
                                 title_standoff = 8)
         
 
-        cols_layout = st.columns(4)
+        cols_layout = st.columns(3)
         with cols_layout[0]:
             x_rev = st.checkbox('Reverse X axis')
             if x_rev:
@@ -212,41 +212,39 @@ if upl_file is not None:
             if y_rev:
                 fig_violin.update_yaxes(autorange='reversed')
         with cols_layout[2]:
-            y_rev = st.checkbox('Log Y axis')
-            if y_rev:
-                fig_violin.update_yaxes(type="log")
-        with cols_layout[3]:
-            x_grid = st.checkbox('X grid')
-            if x_grid:
-                fig_violin.update_xaxes(showgrid=True)        
-        
-        cols_layout = st.columns(4)
-        with cols_layout[0]:
-            y_grid = st.checkbox('Y grid')
-            if y_grid:
-                fig_violin.update_yaxes(showgrid=True)
-        with cols_layout[1]:
-            y_mingrid = st.checkbox('Y minor grid')
-            if y_mingrid:
-                fig_violin.update_yaxes(minor=dict(ticklen=5, tickcolor="black",showgrid=True))
-        with cols_layout[2]:
-            xside = st.checkbox('Top X axis')
-            if xside:
-                fig_violin.update_layout(xaxis={'side': 'top'})
-        with cols_layout[3]:
-            yside = st.checkbox('Right Y axis')
-            if yside:
-                fig_violin.update_layout(yaxis={'side': 'right'})
-        
-        cols_layout = st.columns(2)
-        with cols_layout[0]:
             xrot = st.checkbox('Rotate X labels')
             if xrot:
                 fig_violin.update_xaxes(tickangle= -90)
-        with cols_layout[1]:
+
+        cols_layout = st.columns(3)
+        with cols_layout[0]:
             yrot = st.checkbox('Rotate Y labels')
             if yrot:
                 fig_violin.update_yaxes(tickangle= -90)
+        with cols_layout[1]:
+            xside = st.checkbox('Top X axis')
+            if xside:
+                fig_violin.update_layout(xaxis={'side': 'top'})
+        with cols_layout[2]:
+            yside = st.checkbox('Right Y axis')
+            if yside:
+                fig_violin.update_layout(yaxis={'side': 'right'})
+
+        cols_layout = st.columns(3)
+        with cols_layout[0]:
+            x_grid = st.checkbox('X grid')
+            if x_grid:
+                fig_violin.update_xaxes(showgrid=True)        
+        with cols_layout[1]:
+            y_grid = st.checkbox('Y grid')
+            if y_grid:
+                fig_violin.update_yaxes(showgrid=True)
+        with cols_layout[2]:
+            y_mingrid = st.checkbox('Y minor grid')
+            if y_mingrid:
+                fig_violin.update_yaxes(minor=dict(ticklen=5, tickcolor="black",showgrid=True))
+        
+
 
         st.plotly_chart(fig_violin,theme=None)
 

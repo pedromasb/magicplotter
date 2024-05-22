@@ -61,7 +61,7 @@ if upl_file is not None:
     st.write(data.head())
 
     cols = st.multiselect(
-        "Choose columns", list(data.columns),  [data.columns[1], data.columns[2]], max_selections=4
+        "Choose columns", list(data.columns),  [data.columns[0]], max_selections=4
     )
 
     if len(cols)<1:
@@ -217,10 +217,6 @@ if upl_file is not None:
             if y_rev:
                 fig.update_yaxes(autorange='reversed')
         with cols_layout[2]:
-            x_rev = st.checkbox('Log X axis')
-            if x_rev:
-                fig.update_xaxes(type="log")
-        with cols_layout[3]:
             y_rev = st.checkbox('Log Y axis')
             if y_rev:
                 fig.update_yaxes(type="log")
