@@ -61,15 +61,22 @@ if upl_file is not None:
     st.write(data.head())
 
     cols = st.multiselect(
-        "Choose columns: The first selection will always be used for the X axis. Subsequent selections will be added as data collections on the Y axis.", list(data.columns),  [data.columns[1]], max_selections=2
+        "Choose columns: The first selection will always be used for the X axis. Subsequent selections will be added as data collections on the Y axis.", list(data.columns),  [data.columns[0],data.columns[1]], max_selections=5
     )
 
-    if len(cols)<1:
-        st.error("Please select at least one columns.")
+    if len(cols)<2:
+        st.error("Please select at least two columns.")
 
     else:    
 
         font_list = ["Arial","Courier New", "Open Sans"]
+
+        if len(cols) == 2:
+            data = data.sort_values(by=cols[1],ascending=False)
+
+        else:
+            cols_list = [cols[i] for i in range(len(cols))[2:]]
+            data = data.sort_values(by=cols[1],key=data[cols_list].sum(axis=1).add,ascending=False)
 
         with st.sidebar:
 
@@ -101,12 +108,22 @@ if upl_file is not None:
         with cols_layout[3]:
             c4 = st.text_input('Color #4',value='rgba(237,191,51,0.7)')
 
+        cols_layout = st.columns(4)
+        with cols_layout[0]:
+            l1 = st.text_input('Label #1',value='Data 1')
+        with cols_layout[1]:
+            l2 = st.text_input('Label #2',value='Data 2')
+        with cols_layout[2]:
+            l3 = st.text_input('Label #3',value='Data 3')
+        with cols_layout[3]:
+            l4 = st.text_input('Label #4',value='Data 4')
+
         with st.sidebar:
 
             font_size = st.slider('Default font size',value=16,min_value=5,max_value=24)
             lw = st.slider('Line width',value=2,min_value=0,max_value=5)
 
-        barmode_list = ['overlay','group','stack']
+        barmode_list = ['group','stack','overlay']
 
         cols_layout = st.columns(3)
         with cols_layout[0]:
@@ -114,24 +131,30 @@ if upl_file is not None:
         with cols_layout[1]:
             bmode = st.selectbox("Bar mode", barmode_list)       
         
-        colours = [c1,c2,c3,c4]
+        legend_labels = ['x',l1,l2,l3,l4]
+        labels_map = dict([(str(col), l) for col, l in zip(data[cols].columns,legend_labels)])
+
+        colours = ['black',c1,c2,c3,c4]
         colour_map = dict([(str(col), c) for col, c in zip(data[cols].columns,colours)])
 
         with cols_layout[2]:
             bar_orientation = st.selectbox("Orientation", ['Vertical','Horizontal'])
             if bar_orientation == 'Horizontal':
 
-                fig = px.bar(data_frame=data, x=cols[1], y=cols[0],
-                             color_discrete_map=colour_map,orientation='h')
+                fig = px.bar(data_frame=data.iloc[::-1].reset_index(drop=True), x=cols[1:], y=cols[0],
+                             color_discrete_map=colour_map,orientation='h',barmode=bmode)
 
             elif bar_orientation == 'Vertical':
 
-                fig = px.bar(data_frame=data, x=cols[0], y=cols[1],
-                             color_discrete_map=colour_map, orientation='v')
+                fig = px.bar(data_frame=data, x=cols[0], y=cols[1:],
+                             color_discrete_map=colour_map, orientation='v',barmode=bmode)
 
             else: pass       
         
         fig.update_traces(marker=dict(line=dict(width=lw,color=lc)))
+
+        # For each feature, we change the name to that included in the dictionary labels_map
+        fig.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
 
         # ----------------- From here it is only for formatting. No need to change anything -----------------
 
@@ -185,7 +208,7 @@ if upl_file is not None:
                                 title_standoff = 8)
         
 
-        cols_layout = st.columns(4)
+        cols_layout = st.columns(3)
         with cols_layout[0]:
             x_rev = st.checkbox('Reverse X axis')
             if x_rev:
@@ -195,15 +218,11 @@ if upl_file is not None:
             if y_rev:
                 fig.update_yaxes(autorange='reversed')
         with cols_layout[2]:
-            x_rev = st.checkbox('Log X axis')
-            if x_rev:
-                fig.update_xaxes(type="log")
-        with cols_layout[3]:
             y_rev = st.checkbox('Log Y axis')
             if y_rev:
                 fig.update_yaxes(type="log")
         
-        cols_layout = st.columns(4)
+        cols_layout = st.columns(3)
         with cols_layout[0]:
             x_grid = st.checkbox('X grid')
             if x_grid:
@@ -213,10 +232,6 @@ if upl_file is not None:
             if y_grid:
                 fig.update_yaxes(showgrid=True)
         with cols_layout[2]:
-            x_mingrid = st.checkbox('X minor grid')
-            if x_mingrid:
-                fig.update_xaxes(minor=dict(ticklen=5, tickcolor="black",showgrid=True))
-        with cols_layout[3]:
             y_mingrid = st.checkbox('Y minor grid')
             if y_mingrid:
                 fig.update_yaxes(minor=dict(ticklen=5, tickcolor="black",showgrid=True))
@@ -262,22 +277,21 @@ else:
     st.text("")
     st.markdown('**Below you can find a demo. Choose your file to create your own plot!**')
 
-    data = pd.read_csv('data/example_data.csv')
+    data = pd.read_csv('data/example_data_red.csv')
+
+    data = data.sort_values(by='y0',key=data[['y1','y2','y3']].sum(axis=1).add,ascending=False)
+
     # Dictionary (key:value) with the colour associated with each feature for the plot
     colour_map = {'y0': 'rgba(234, 85, 69,0.7)', 'y1': 'rgba(37, 189, 176, 0.7)', 'y2': 'rgba(31, 52, 64,0.7)', 'y3':'rgba(237, 191, 51,0.7)'}
 
     # Dictionary (key:value) with the label associated with each feature for the legend
     labels_map = {'y0': 'Data 0', 'y1': 'Data 1', 'y2': 'Data 2', 'y3':'Data 3'}
 
-    fig = px.scatter(data_frame=data,x='x',y=['y0','y1','y2','y3'],
-                            color_discrete_map=colour_map)
+    fig = px.bar(data_frame=data, x='obj', y=['y0','y1','y2','y3'],
+                    color_discrete_map=colour_map, orientation='v',barmode='stack')
 
     # For each feature, we change the name to that included in the dictionary labels_map
     fig.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
-
-    fig.update_traces(marker={'size':12},hovertemplate="<br>".join([
-                       "X value: %{x}",
-                       "Y value: %{y}"]))
 
     # ----------------- From here it is only for formatting. No need to change anything -----------------
 
@@ -291,7 +305,7 @@ else:
                               plot_bgcolor='white',  # background color
                               width=840,  # figure width
                               height=540,  # figure height
-                              title={'text':'Interactive Scatter Plot','x':0.5,'font':{'size':24}},  # Title formatting
+                              title={'text':'Interactive Bar Plot','x':0.5,'font':{'size':24}},  # Title formatting
                               legend_title='Data Collections')
 
     # x and y-axis formatting
