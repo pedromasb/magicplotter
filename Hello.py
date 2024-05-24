@@ -25,9 +25,20 @@ st.markdown('''
 
             With **MagicPlotter**, you will save up to **500 lines of code per visualization**. Interactive data-sharing has never been easier!
 
-            &nbsp;
+            Submit any feature request here &nbsp; [![badge](https://img.shields.io/badge/Issues-red?logo=github&label=MagicPlotter&labelColor=d74f4d&color=c3afad)](https://github.com/pedromasb/magicplotter/issues)
 
             ''')
+
+with st.popover('See issues'):
+    st.markdown('''
+                
+            ![badge](https://img.shields.io/github/issues/pedromasb/magicplotter?style=for-the-badge)
+                
+            ![badge](https://img.shields.io/github/issues-closed/pedromasb/magicplotter?style=for-the-badge)
+                
+            ''')
+    
+st.markdown('&nbsp;')
 
 st.info(''' 
             **Streamlit Data Privacy**          
