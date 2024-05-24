@@ -305,7 +305,7 @@ else:
                               plot_bgcolor='white',  # background color
                               width=840,  # figure width
                               height=540,  # figure height
-                              title={'text':'Interactive Bar Plot','x':0.5,'font':{'size':24}},  # Title formatting
+                              title={'text':'Interactive Bar Chart','x':0.5,'font':{'size':24}},  # Title formatting
                               legend_title='Data Collections')
 
     # x and y-axis formatting
