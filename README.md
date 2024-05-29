@@ -6,7 +6,7 @@ Check it out on &nbsp; [![st badge](https://img.shields.io/badge/MagicPlotter-li
 
 Below you can find a demo on how to use the app.
 
-https://github.com/pedromasb/magicplotter/assets/112410947/a07ef089-13b3-40c1-a688-80576870d310
+https://github.com/pedromasb/magicplotter/assets/112410947/bcc65c63-e419-46a6-b1bd-82887c850654
 
 ## Running the app locally
 
