@@ -240,13 +240,13 @@ if upl_file is not None:
 
         cols_layout = st.columns(4)
         with cols_layout[0]:
-            xside = st.checkbox('Top X axis')
+            xside = st.checkbox('Top X axis ticks')
             if xside:
-                fig.update_layout(xaxis={'side': 'top'})
+                fig.update_xaxes(mirror='ticks')
         with cols_layout[1]:
-            yside = st.checkbox('Right Y axis')
+            yside = st.checkbox('Right Y axis ticks')
             if yside:
-                fig.update_layout(yaxis={'side': 'right'})
+                fig.update_yaxes(mirror='ticks')
         with cols_layout[2]:
             xrot = st.checkbox('Rotate X labels')
             if xrot:

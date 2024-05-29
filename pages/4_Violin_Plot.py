@@ -223,13 +223,13 @@ if upl_file is not None:
             if yrot:
                 fig_violin.update_yaxes(tickangle= -90)
         with cols_layout[1]:
-            xside = st.checkbox('Top X axis')
+            xside = st.checkbox('Top X axis ticks')
             if xside:
-                fig_violin.update_layout(xaxis={'side': 'top'})
+                fig_violin.update_xaxes(mirror='ticks')
         with cols_layout[2]:
-            yside = st.checkbox('Right Y axis')
+            yside = st.checkbox('Right Y axis ticks')
             if yside:
-                fig_violin.update_layout(yaxis={'side': 'right'})
+                fig_violin.update_yaxes(mirror='ticks')
 
         cols_layout = st.columns(3)
         with cols_layout[0]:
