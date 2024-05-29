@@ -29,13 +29,15 @@ st.markdown('''
 
             ''')
 
-with st.popover('See issues'):
+tab1, tab2 = st.tabs(["Open", "Closed"])
+with tab1:
     st.markdown('''
-                
             ![badge](https://img.shields.io/github/issues/pedromasb/magicplotter?style=for-the-badge)
-                
+            ''')
+    
+with tab2: 
+    st.markdown('''
             ![badge](https://img.shields.io/github/issues-closed/pedromasb/magicplotter?style=for-the-badge)
-                
             ''')
     
 st.markdown('&nbsp;')
