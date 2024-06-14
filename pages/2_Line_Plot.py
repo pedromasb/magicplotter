@@ -120,11 +120,14 @@ if upl_file is not None:
             with cols_ly[0]:
                 lw = st.slider('Line width',value=2,min_value=1,max_value=5)
             with cols_ly[1]:
-                mk_lw = st.slider('Marker line width',value=0,min_value=0,max_value=5)
+                mk_size = st.slider('Marker size',value=8,min_value=1,max_value=20)
 
             cols_side = st.columns(2)
             with cols_side[1]:
-                mk_size = st.slider('Marker size',value=8,min_value=1,max_value=20)
+                mk_lw = st.slider('Marker line width',value=0,min_value=0,max_value=5)
+                
+        with st.sidebar:
+            edge_color = st.selectbox('Marker edge color', ['white','black','grey','lightgrey'])
             
         legend_labels = ['x',l1,l2,l3,l4]
         labels_map = dict([(str(col), l) for col, l in zip(data[cols].columns,legend_labels)])
@@ -135,7 +138,7 @@ if upl_file is not None:
         fig = px.line(data_frame=data.sort_values(by=cols[0]), x=cols[0], y=cols[1:],
                                 color_discrete_map=colour_map)
         
-        fig.update_traces(line={'width': lw},marker=dict(size=mk_size,line=dict(width=mk_lw)))
+        fig.update_traces(line={'width': lw},marker=dict(size=mk_size,line=dict(width=mk_lw,color=edge_color)))
 
         # For each feature, we change the name to that included in the dictionary labels_map
         fig.for_each_trace(lambda t: t.update(name = labels_map[t.name]))
