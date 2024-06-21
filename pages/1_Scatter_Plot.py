@@ -254,7 +254,7 @@ if upl_file is not None:
         buffer_pdf = io.BytesIO()
         fig.write_image(file=buffer_pdf, format="pdf")
         
-        cols_layout = st.columns(3)
+        cols_layout = st.columns([0.2, 0.2, 0.6])
         with cols_layout[0]:
             st.download_button(label='Download Figure as html',data=fig_html,file_name='plotly_figure.html') 
         with cols_layout[1]:
