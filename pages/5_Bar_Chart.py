@@ -3,6 +3,7 @@ from streamlit.logger import get_logger
 import pandas as pd
 import plotly.express as px
 import numpy as np
+import io
 
 st.set_page_config(
     page_title="MagicPlotter",
@@ -260,9 +261,14 @@ if upl_file is not None:
 
         fig_html = fig.to_html()
         
+        buffer_pdf = io.BytesIO()
+        fig.write_image(file=buffer_pdf, format="pdf")
+        
         cols_layout = st.columns(3)
         with cols_layout[0]:
-            st.download_button(label='Download Figure as html',data=fig_html,file_name='plotly_figure.html')  
+            st.download_button(label='Download Figure as html',data=fig_html,file_name='plotly_figure.html') 
+        with cols_layout[1]:
+            st.download_button(label='Download Figure as pdf',data=buffer_pdf,file_name='plotly_figure.pdf',mime='application/pdf')  
 
     if st.button('Click here to celebrate!',type="primary"):
         st.balloons()
