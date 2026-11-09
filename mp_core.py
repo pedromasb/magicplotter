@@ -24,7 +24,7 @@ MAX_SERIES = len(PALETTE)
 AUTHOR_BADGE = (
     "by Pedro Mas Buitrago &nbsp; "
     "[![pedro](https://img.shields.io/badge/%20Click_me!-red?style=social"
-    "&logo=github&label=pedromasb&labelColor=grey)](https://pedromasb.github.io/)"
+    "&logo=github&label=pedromasb&labelColor=grey)](https://www.pedromasbuitrago.com/)"
 )
 
 # Client-side modebar export: the camera icon downloads a 2x SVG at no server cost.
