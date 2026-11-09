@@ -14,9 +14,12 @@ https://github.com/pedromasb/magicplotter/assets/112410947/bcc65c63-e419-46a6-b1
 git clone https://github.com/pedromasb/magicplotter.git
 cd magicplotter
 pip install -r requirements.txt
-
-# Downgrade the streamlit version to avoid problems when uploading data files locally
-pip install --upgrade streamlit==1.29.0
-
 streamlit run Hello.py
 ```
+
+PDF/PNG export uses [Kaleido](https://github.com/plotly/Kaleido), which needs a Chrome/Chromium
+installation. If none is available, run `plotly_get_chrome` once (or install Chromium with your
+package manager). On Streamlit Community Cloud this is handled by `packages.txt`.
+
+The camera icon in each chart's toolbar always downloads a high-resolution SVG directly in the
+browser, no server-side rendering required.
