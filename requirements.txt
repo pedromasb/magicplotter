@@ -1,7 +1,4 @@
-altair
-numpy
-pandas
-pydeck
-streamlit
-plotly
-kaleido
+streamlit>=1.45
+plotly>=6.1
+kaleido>=1.0
+pandas>=2.0

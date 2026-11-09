@@ -1,1 +1,5 @@
-# Optional file to include configuration options
+[server]
+maxUploadSize = 200
+
+[theme]
+base = "light"
