@@ -6,7 +6,7 @@ st.set_page_config(
     layout="centered")
 
 st.title('MagicPlotter')
-st.subheader('by Pedro Mas Buitrago &nbsp; [![pedro](https://img.shields.io/badge/%20Click_me!-red?style=social&logo=github&label=pedromasb&labelColor=grey)](https://pedromasb.github.io/)')
+st.subheader('by Pedro Mas Buitrago &nbsp; [![pedro](https://img.shields.io/badge/%20Click_me!-red?style=social&logo=github&label=pedromasb&labelColor=grey)](https://www.pedromasbuitrago.com/)')
 
 st.markdown('''
             ---
